@@ -1,6 +1,16 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import * as L from 'leaflet';
 
+const defaultIcon = L.icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 export interface LatLng {
   lat: number;
   lng: number;
@@ -35,7 +45,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }).addTo(this.map);
 
     if (this.pin) {
-      this.marker = L.marker([this.pin.lat, this.pin.lng]).addTo(this.map);
+      this.marker = L.marker([this.pin.lat, this.pin.lng], { icon: defaultIcon }).addTo(this.map);
       this.map.setView([this.pin.lat, this.pin.lng], 13);
     } else if (!this.readonly) {
       navigator.geolocation.getCurrentPosition(
@@ -48,7 +58,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.map.on('click', (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng;
         this.marker?.remove();
-        this.marker = L.marker([lat, lng]).addTo(this.map!);
+        this.marker = L.marker([lat, lng], { icon: defaultIcon }).addTo(this.map!);
         this.locationPicked.emit({ lat, lng });
       });
     }

@@ -1,0 +1,31 @@
+<div class="create-event-page">
+  <header class="create-header">
+    <h1>New Event</h1>
+  </header>
+
+  <div class="create-content">
+    <form class="create-form" (ngSubmit)="onSubmit()" ngForm>
+      <div class="form-group">
+        <label class="form-label" for="name">Event Name</label>
+        <input
+          class="form-input"
+          type="text"
+          id="name"
+          name="name"
+          [(ngModel)]="event.Name"
+          placeholder="Enter event name"
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <div class="map"
+          leaflet
+          [leafletOptions]="options">
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">Create Event</button>
+    </form>
+  </div>
+</div>

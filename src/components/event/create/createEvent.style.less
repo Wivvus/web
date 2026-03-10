@@ -1,0 +1,121 @@
+.create-event-page {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.create-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--red);
+  height: var(--header-height);
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+
+  h1 {
+    color: var(--white);
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+}
+
+.create-content {
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.create-form {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.1rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--black);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.65rem 0.875rem;
+  font-family: var(--font);
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &::placeholder { color: #BDBDBD; }
+
+  &:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(211,47,47,0.15);
+  }
+}
+
+.map {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  background: #e8e8e8;
+}
+
+.btn-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 1.5rem;
+  margin-top: 0.5rem;
+  background: var(--red);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+
+  &:hover { background: var(--red-dark); }
+  &:active { transform: scale(0.98); }
+}
+
+/* ---------- Tablet / Desktop ---------- */
+@media (min-width: 768px) {
+  .create-header {
+    padding: 0 2rem;
+    h1 { font-size: 1.4rem; }
+  }
+
+  .create-content {
+    padding: 1.5rem 2rem;
+  }
+
+  .create-form {
+    padding: 2rem;
+  }
+
+  .map {
+    height: 320px;
+  }
+}

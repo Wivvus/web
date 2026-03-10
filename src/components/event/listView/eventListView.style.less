@@ -1,0 +1,39 @@
+.event-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+  border-left: 4px solid var(--red);
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.1s;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.event-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 0.25rem;
+}
+
+.event-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .event-card {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .event-name { font-size: 1.1rem; }
+}

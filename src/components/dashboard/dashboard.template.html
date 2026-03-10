@@ -1,0 +1,47 @@
+<div class="dashboard">
+    <header class="header">
+    <h1>Dashboard</h1>
+    <div class="user-section" *ngIf="user">
+        <img [src]="user.picture" [alt]="user.name" class="profile-pic">
+        <span class="user-name">{{ user.name }}</span>
+        <button (click)="logout()" class="btn-logout">Logout</button>
+    </div>
+    </header>
+
+    <div class="content">
+        <div class="card" *ngIf="loading">
+            <p>Loading...</p>
+        </div>
+
+        <div class="card" *ngIf="error">
+            <h2>Error</h2>
+            <p class="error-message">{{ error }}</p>
+            <button (click)="loadData()" class="btn-retry">Retry</button>
+        </div>
+
+        <div class="card" *ngIf="!loading && !error && userData">
+            <h2>{{ userData.message }}</h2>
+            <div class="user-info">
+            <p><strong>Email:</strong> {{ userData.user.Email }}</p>
+            <p><strong>Name:</strong> {{ userData.user.Name }}</p>
+            <p><strong>User ID:</strong> {{ userData.user.ID }}</p>
+            </div>
+            <div class="data-section">
+            <h3>Your Data:</h3>
+            <ul>
+                <li *ngFor="let item of userData.data">{{ item }}</li>
+            </ul>
+            </div>
+        </div>
+
+        <div class="card" *ngIf="!loading && !error && userProfile">
+            <h2>Profile Information</h2>
+            <div class="profile-info">
+            <img [src]="userProfile.picture" [alt]="userProfile.name" class="profile-large">
+            <p><strong>Email:</strong> {{ userProfile.email }}</p>
+            <p><strong>Name:</strong> {{ userProfile.name }}</p>
+            <p><strong>Role:</strong> {{ userProfile.role }}</p>
+            </div>
+        </div>
+    </div>
+</div>

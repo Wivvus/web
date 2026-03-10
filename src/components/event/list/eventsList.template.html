@@ -1,0 +1,14 @@
+<div class="events-page">
+  <header class="events-header">
+    <h1>Events</h1>
+    <create-event-button></create-event-button>
+  </header>
+
+  <div class="events-content">
+    @for (event of events; track event.ID) {
+      <eventListView [event]="event"></eventListView>
+    } @empty {
+      <p class="empty-state">No events yet. Be the first to create one!</p>
+    }
+  </div>
+</div>

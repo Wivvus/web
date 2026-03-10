@@ -15,6 +15,8 @@ import { MapComponent, LatLng } from '../../map/map.component';
 })
 export class EventDetailComponent implements OnInit {
   event?: Event;
+  attendees: { name: string, avatar_url: string }[] = [];
+  isAttending: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,8 +28,22 @@ export class EventDetailComponent implements OnInit {
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.apiService.getEvent(id).subscribe({
-      next: event => this.event = event,
+      next: event => {
+        this.event = event;
+        if (this.isLoggedIn) {
+          this.loadAttendees(id);
+        }
+      },
       error: () => this.router.navigate(['/'])
+    });
+  }
+
+  private loadAttendees(id: number): void {
+    this.apiService.getAttendees(id).subscribe({
+      next: res => {
+        this.attendees = res.attendees;
+        this.isAttending = res.is_attending;
+      }
     });
   }
 
@@ -38,9 +54,27 @@ export class EventDetailComponent implements OnInit {
     return undefined;
   }
 
+  get isLoggedIn(): boolean {
+    return this.authService.isAuthenticated();
+  }
+
   get isOwner(): boolean {
     const user = this.authService.getUser();
-return !!user && !!this.event && !!user.db_id && this.event.creator_id === user.db_id;
+    return !!user && !!this.event && !!user.db_id && this.event.creator_id === user.db_id;
+  }
+
+  onAttend(): void {
+    if (!this.event) return;
+    this.apiService.attend(this.event.id).subscribe({
+      next: () => this.loadAttendees(this.event!.id)
+    });
+  }
+
+  onDrop(): void {
+    if (!this.event) return;
+    this.apiService.dropAttendance(this.event.id).subscribe({
+      next: () => this.loadAttendees(this.event!.id)
+    });
   }
 
   onEdit(): void {

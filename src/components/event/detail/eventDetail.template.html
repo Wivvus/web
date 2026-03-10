@@ -31,5 +31,22 @@
 
     <p class="detail-description" *ngIf="event.description">{{ event.description }}</p>
 
+    <div class="attend-section" *ngIf="isLoggedIn">
+      <button class="btn-attend" *ngIf="!isAttending" (click)="onAttend()">Join this run</button>
+      <button class="btn-drop" *ngIf="isAttending" (click)="onDrop()">Drop out</button>
+    </div>
+
+    <div class="attendees-section" *ngIf="isLoggedIn">
+      <h3 class="attendees-title">
+        {{ event.attendee_count }} {{ event.attendee_count === 1 ? 'runner' : 'runners' }} attending
+      </h3>
+      <div class="attendees-list" *ngIf="attendees.length > 0">
+        <div class="attendee" *ngFor="let a of attendees">
+          <img class="attendee-avatar" [src]="a.avatar_url" [alt]="a.name">
+          <span class="attendee-name">{{ a.name }}</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

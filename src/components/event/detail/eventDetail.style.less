@@ -125,6 +125,79 @@
   margin: 0;
 }
 
+.attend-section {
+  margin-bottom: 1rem;
+}
+
+.btn-attend, .btn-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+
+  &:active { transform: scale(0.98); }
+}
+
+.btn-attend {
+  background: var(--red);
+  color: var(--white);
+  &:hover { background: var(--red-dark); }
+}
+
+.btn-drop {
+  background: var(--border);
+  color: var(--text-muted);
+  &:hover { background: #ccc; }
+}
+
+.attendees-section {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+}
+
+.attendees-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--black);
+  margin: 0 0 0.75rem;
+}
+
+.attendees-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.attendee {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.attendee-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--yellow);
+}
+
+.attendee-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
 @media (min-width: 768px) {
   .detail-header {
     padding: 0 2rem;

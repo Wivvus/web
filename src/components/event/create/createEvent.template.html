@@ -19,10 +19,7 @@
 
       <div class="form-group">
         <label class="form-label">Location</label>
-        <div class="map"
-          leaflet
-          [leafletOptions]="options">
-        </div>
+          <app-map [height]="200" [width]="480"></app-map>
       </div>
 
       <button type="submit" class="btn-submit">Create Event</button>

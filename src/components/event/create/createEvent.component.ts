@@ -1,52 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Event } from '../../../models/event.model';
-import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api/api.service';
 import { Router } from '@angular/router';
-import { LeafletModule, LeafletUtil } from "@asymmetrik/ngx-leaflet";
-import * as Leaflet from 'leaflet';
+import { MapComponent } from '../../map/map.component';
 
 @Component({
   selector: 'create-event',
   standalone: true,
-  imports: [CommonModule, FormsModule, LeafletModule],
+  imports: [CommonModule, FormsModule, MapComponent],
   templateUrl: "./createEvent.template.html",
   styleUrl: "./createEvent.style.less"
 })
-
 export class CreateEventComponent {
-    event: Event = new Event()
-    
-    options: Leaflet.MapOptions = {
-    layers: this.getLayers(),
-    zoom: 12,
-    center: new Leaflet.LatLng(43.530147, 16.488932)
-  };
+    event: Event = new Event();
+
     constructor(
         private apiService: ApiService,
         private router: Router
     ) {}
 
-    onSubmit(): void{
-        var me = this
+    onSubmit(): void {
+        const me = this;
         this.apiService.createEvent(this.event).subscribe({
-            next() {
-                me.router.navigate(['/'])
+            next() { me.router.navigate(['/']); },
+            error(err) {
+                if (err.status == 401) { me.router.navigate(['/login']); }
             },
-            error(err){
-                if (err.status == 401) {
-                    me.router.navigate(['/login'])
-                } 
-            },
-        })
+        });
     }
-    
-    getLayers(): Leaflet.Layer[] {
-    return [
-        new Leaflet.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-        } as Leaflet.TileLayerOptions),
-    ] as Leaflet.Layer[];
-    }    
 }

@@ -19,7 +19,7 @@
 
       <div class="form-group">
         <label class="form-label">Location</label>
-          <app-map [height]="200" [width]="480"></app-map>
+          <app-map [height]="200" [width]="480" (locationPicked)="onLocationPicked($event)"></app-map>
       </div>
 
       <button type="submit" class="btn-submit">Create Event</button>

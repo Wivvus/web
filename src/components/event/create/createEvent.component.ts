@@ -4,7 +4,7 @@ import { Event } from '../../../models/event.model';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api/api.service';
 import { Router } from '@angular/router';
-import { MapComponent } from '../../map/map.component';
+import { MapComponent, LatLng } from '../../map/map.component';
 
 @Component({
   selector: 'create-event',
@@ -20,6 +20,11 @@ export class CreateEventComponent {
         private apiService: ApiService,
         private router: Router
     ) {}
+
+    onLocationPicked(location: LatLng): void {
+        this.event.Lat = location.lat;
+        this.event.Lng = location.lng;
+    }
 
     onSubmit(): void {
         const me = this;

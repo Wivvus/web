@@ -19,7 +19,9 @@ export const routes: Routes = [
   {
     path: 'events/create',
     component: CreateEventComponent,
-    title: "Create a new event wivvus"
+    title: "Create a new event wivvus",
+    canActivate: [authGuard],
+    data: { message: 'You need to be logged in to create events' }
   },
 
   {

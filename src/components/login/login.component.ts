@@ -13,6 +13,8 @@ import { AuthService } from '../../services/authentication/auth.service';
 export class LoginComponent implements OnInit, AfterViewInit {
   @ViewChild('googleButton', { static: true }) googleButton!: ElementRef;
 
+  message: string | null = null;
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -20,14 +22,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    // If already authenticated, redirect to dashboard
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
+    }
+    this.message = this.route.snapshot.queryParamMap.get('message');
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (returnUrl) {
+      this.authService.redirectAfterLogin = returnUrl;
     }
   }
 
   ngAfterViewInit(): void {
-    // Initialize Google Sign-In button after view is ready
     this.authService.initializeGoogleSignIn(this.googleButton.nativeElement);
   }
 }

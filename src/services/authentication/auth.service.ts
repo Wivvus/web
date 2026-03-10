@@ -20,6 +20,8 @@ export class AuthService {
   private tokenSubject = new BehaviorSubject<string | null>(this.getStoredToken());
   private userSubject = new BehaviorSubject<UserInfo | null>(this.getStoredUser());
 
+  public redirectAfterLogin: string = '/dashboard';
+
   public token$: Observable<string | null> = this.tokenSubject.asObservable();
   public user$: Observable<UserInfo | null> = this.userSubject.asObservable();
 
@@ -75,8 +77,8 @@ export class AuthService {
     this.setToken(idToken);
     this.setUser(userInfo);
 
-    // Navigate to dashboard
-    this.router.navigate(['/dashboard']);
+    this.router.navigateByUrl(this.redirectAfterLogin);
+    this.redirectAfterLogin = '/dashboard';
   }
 
   /**

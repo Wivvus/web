@@ -5,7 +5,7 @@
   </header>
 
   <div class="events-content">
-    @for (event of events; track event.ID) {
+    @for (event of events; track event.id) {
       <eventListView [event]="event"></eventListView>
     } @empty {
       <p class="empty-state">No events yet. Be the first to create one!</p>

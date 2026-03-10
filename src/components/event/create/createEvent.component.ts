@@ -22,8 +22,7 @@ export class CreateEventComponent {
     ) {}
 
     onLocationPicked(location: LatLng): void {
-        this.event.Lat = location.lat;
-        this.event.Lng = location.lng;
+        this.event.location = { lat: location.lat, long: location.lng };
     }
 
     onSubmit(): void {

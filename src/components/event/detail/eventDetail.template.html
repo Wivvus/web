@@ -1,0 +1,31 @@
+<div class="detail-page" *ngIf="event">
+  <header class="detail-header">
+    <button class="btn-back" (click)="goBack()">&#8592;</button>
+    <h1>{{ event.name }}</h1>
+  </header>
+
+  <div class="detail-map">
+    <app-map [height]="280" [readonly]="true" [pin]="pin"></app-map>
+  </div>
+
+  <div class="detail-content">
+
+    <div class="detail-stats" *ngIf="event.distance_km || event.pace_min_km || event.start_time">
+      <div class="stat" *ngIf="event.start_time">
+        <span class="stat-label">When</span>
+        <span class="stat-value">{{ event.start_time | date:'medium' }}</span>
+      </div>
+      <div class="stat" *ngIf="event.distance_km">
+        <span class="stat-label">Distance</span>
+        <span class="stat-value">{{ event.distance_km }} km</span>
+      </div>
+      <div class="stat" *ngIf="event.pace_min_km">
+        <span class="stat-label">Pace</span>
+        <span class="stat-value">{{ event.pace_min_km }} min/km</span>
+      </div>
+    </div>
+
+    <p class="detail-description" *ngIf="event.description">{{ event.description }}</p>
+
+  </div>
+</div>

@@ -4,6 +4,7 @@ import { DashboardComponent } from '../components/dashboard/dashboard.component'
 import { authGuard } from '../guards/auth/auth.guard';
 import { EventsListComponent } from '../components/event/list/eventsList.component';
 import { CreateEventComponent } from '../components/event/create/createEvent.component';
+import { EventDetailComponent } from '../components/event/detail/eventDetail.component';
 
 export const routes: Routes = [
   { 
@@ -22,6 +23,11 @@ export const routes: Routes = [
     title: "Create a new event wivvus",
     canActivate: [authGuard],
     data: { message: 'You need to be logged in to create events' }
+  },
+  {
+    path: 'events/:id',
+    component: EventDetailComponent,
+    title: 'Event'
   },
 
   {

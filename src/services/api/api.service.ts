@@ -36,6 +36,10 @@ export class ApiService {
     return this.http.get<Event[]>(`${this.apiUrl}/events`)
   }
 
+  getEvent(id: number): Observable<Event> {
+    return this.http.get<Event>(`${this.apiUrl}/event/${id}`);
+  }
+
   /**
    * Get user-specific data
    */

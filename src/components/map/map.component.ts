@@ -15,6 +15,8 @@ export interface LatLng {
 export class MapComponent implements AfterViewInit, OnDestroy {
   @Input() height: number = 200;
   @Input() width?: number;
+  @Input() readonly: boolean = false;
+  @Input() pin?: LatLng;
   @Output() locationPicked = new EventEmitter<LatLng>();
 
   @ViewChild('mapEl') mapEl!: ElementRef;
@@ -32,17 +34,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
-    this.map.on('click', (e: L.LeafletMouseEvent) => {
-      const { lat, lng } = e.latlng;
-      this.marker?.remove();
-      this.marker = L.marker([lat, lng]).addTo(this.map!);
-      this.locationPicked.emit({ lat, lng });
-    });
+    if (this.pin) {
+      this.marker = L.marker([this.pin.lat, this.pin.lng]).addTo(this.map);
+      this.map.setView([this.pin.lat, this.pin.lng], 13);
+    } else if (!this.readonly) {
+      navigator.geolocation.getCurrentPosition(
+        pos => this.map?.setView([pos.coords.latitude, pos.coords.longitude], 13),
+        () => {}
+      );
+    }
 
-    navigator.geolocation.getCurrentPosition(
-      pos => this.map?.setView([pos.coords.latitude, pos.coords.longitude], 13),
-      () => {}
-    );
+    if (!this.readonly) {
+      this.map.on('click', (e: L.LeafletMouseEvent) => {
+        const { lat, lng } = e.latlng;
+        this.marker?.remove();
+        this.marker = L.marker([lat, lng]).addTo(this.map!);
+        this.locationPicked.emit({ lat, lng });
+      });
+    }
   }
 
   ngOnDestroy(): void {

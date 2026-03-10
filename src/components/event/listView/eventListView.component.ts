@@ -1,9 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService, UserInfo } from '../../../services/authentication/auth.service';
-import { ApiService, UserData, UserProfile } from '../../../services/api/api.service';
+import { Router } from '@angular/router';
 import { Event } from '../../../models/event.model';
-import { CreateEventButtonComponent } from "../createButton/createEventButton.component";
 
 @Component({
   selector: 'eventListView',
@@ -12,15 +10,12 @@ import { CreateEventButtonComponent } from "../createButton/createEventButton.co
   templateUrl: "./eventListView.template.html",
   styleUrl: "./eventListView.style.less"
 })
+export class EventsListViewComponent {
+    @Input() event: Event = new Event();
 
-export class EventsListViewComponent implements OnInit {
-    @Input() event: Event = new Event;
-    constructor(
-        private authService: AuthService,
-        private apiService: ApiService
-    ) {}
+    constructor(private router: Router) {}
 
-    ngOnInit(): void {
-
+    onClick(): void {
+        this.router.navigate(['/events', this.event.id]);
     }
 }

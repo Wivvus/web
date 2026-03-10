@@ -1,0 +1,132 @@
+:host {
+  display: block;
+}
+
+.detail-page {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.detail-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--red);
+  height: var(--header-height);
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+
+  h1 {
+    color: var(--white);
+    font-size: 1.2rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.btn-back {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+}
+
+.detail-map {
+  app-map {
+    display: block;
+  }
+}
+
+.detail-content {
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.detail-stats {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--black);
+}
+
+.detail-description {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .detail-header {
+    padding: 0 2rem;
+    h1 { font-size: 1.4rem; }
+  }
+
+  .detail-map app-map {
+    height: 400px;
+  }
+
+  .detail-content {
+    padding: 1.5rem 2rem;
+  }
+
+  .detail-stats {
+    flex-direction: row;
+    gap: 0;
+
+    .stat {
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      border-bottom: none;
+      border-right: 1px solid var(--border);
+      padding: 0 1rem;
+
+      &:first-child { padding-left: 0; }
+      &:last-child { border-right: none; padding-right: 0; }
+    }
+  }
+}

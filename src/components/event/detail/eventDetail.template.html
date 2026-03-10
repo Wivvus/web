@@ -2,6 +2,10 @@
   <header class="detail-header">
     <button class="btn-back" (click)="goBack()">&#8592;</button>
     <h1>{{ event.name }}</h1>
+    <div class="header-actions" *ngIf="isOwner">
+      <button class="btn-edit" (click)="onEdit()">Edit</button>
+      <button class="btn-delete" (click)="onDelete()">Delete</button>
+    </div>
   </header>
 
   <div class="detail-map">

@@ -12,5 +12,6 @@ export class Event {
     public distance_km: number | null = null,
     public pace_min_km: number | null = null,
     public location: Location = { lat: null, long: null },
+    public creator_id: number = 0,
   ) { }
 }

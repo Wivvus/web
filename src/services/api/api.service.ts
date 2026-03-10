@@ -40,6 +40,14 @@ export class ApiService {
     return this.http.get<Event>(`${this.apiUrl}/event/${id}`);
   }
 
+  updateEvent(id: number, event: Event): Observable<Event> {
+    return this.http.put<Event>(`${this.apiUrl}/event/${id}`, event);
+  }
+
+  deleteEvent(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/event/${id}`);
+  }
+
   /**
    * Get user-specific data
    */

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
@@ -11,6 +12,7 @@ export interface UserInfo {
   name: string;
   picture: string;
   sub: string;
+  db_id?: number;
 }
 
 @Injectable({
@@ -25,7 +27,29 @@ export class AuthService {
   public token$: Observable<string | null> = this.tokenSubject.asObservable();
   public user$: Observable<UserInfo | null> = this.userSubject.asObservable();
 
-  constructor(private router: Router) {}
+  private http: HttpClient;
+
+  constructor(private router: Router, httpBackend: HttpBackend) {
+    this.http = new HttpClient(httpBackend);
+
+    const user = this.getUser();
+    const token = this.getToken();
+    if (user && !user.db_id && token) {
+      this.fetchDbId(token, user);
+    }
+  }
+
+  private fetchDbId(token: string, user: UserInfo): void {
+    this.http.get<{ user: { id: number } }>(`${environment.apiUrl}/user/data`, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: res => {
+        user.db_id = res.user.id;
+        this.setUser(user);
+      },
+      error: () => {}
+    });
+  }
 
   /**
    * Initialize and render Google Sign-In button
@@ -73,12 +97,24 @@ export class AuthService {
       sub: payload.sub
     };
 
-    // Store credentials
     this.setToken(idToken);
-    this.setUser(userInfo);
 
-    this.router.navigateByUrl(this.redirectAfterLogin);
-    this.redirectAfterLogin = '/dashboard';
+    this.http.get<{ user: { id: number } }>(`${environment.apiUrl}/user/data`, {
+      headers: { Authorization: `Bearer ${idToken}` }
+    }).subscribe({
+      next: res => {
+        userInfo.db_id = res.user.id;
+        this.setUser(userInfo);
+        this.router.navigateByUrl(this.redirectAfterLogin);
+        this.redirectAfterLogin = '/dashboard';
+      },
+      error: () => {
+        this.setUser(userInfo);
+        this.router.navigateByUrl(this.redirectAfterLogin);
+        this.redirectAfterLogin = '/dashboard';
+      }
+    });
+
   }
 
   /**
@@ -150,7 +186,19 @@ export class AuthService {
    * Check if user is authenticated
    */
   public isAuthenticated(): boolean {
-    return this.tokenSubject.value !== null;
+    const token = this.tokenSubject.value;
+    if (!token) return false;
+    try {
+      const payload = this.decodeJWT(token);
+      const expired = payload.exp && payload.exp < Math.floor(Date.now() / 1000);
+      if (expired) {
+        this.logout();
+        return false;
+      }
+    } catch {
+      return false;
+    }
+    return true;
   }
 
   /**

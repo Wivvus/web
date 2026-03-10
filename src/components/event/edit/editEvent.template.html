@@ -1,0 +1,56 @@
+<div class="edit-event-page" *ngIf="event">
+  <header class="edit-header">
+    <button class="btn-back" (click)="goBack()">&#8592;</button>
+    <h1>Edit Event</h1>
+  </header>
+
+  <div class="edit-content">
+    <form class="edit-form" (ngSubmit)="onSubmit()" ngForm>
+
+      <div class="form-group">
+        <label class="form-label" for="name">Event Name</label>
+        <input class="form-input" type="text" id="name" name="name"
+          [(ngModel)]="event.name" placeholder="Enter event name">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="description">Description</label>
+        <textarea class="form-input form-textarea" id="description" name="description"
+          [(ngModel)]="event.description" placeholder="Describe the event" rows="3"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="start_date">Start Date</label>
+          <input class="form-input" type="date" id="start_date" name="start_date"
+            [(ngModel)]="startDate" (ngModelChange)="onDateTimeChange()">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="start_time">Start Time</label>
+          <input class="form-input" type="time" id="start_time" name="start_time"
+            [(ngModel)]="startTime" (ngModelChange)="onDateTimeChange()">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="distance_km">Distance (km)</label>
+          <input class="form-input" type="number" id="distance_km" name="distance_km"
+            [(ngModel)]="event.distance_km" placeholder="e.g. 5" min="0" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pace_min_km">Pace (min/km)</label>
+          <input class="form-input" type="number" id="pace_min_km" name="pace_min_km"
+            [(ngModel)]="event.pace_min_km" placeholder="e.g. 5.5" min="0" step="0.1">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <app-map [height]="200" [pin]="pin" (locationPicked)="onLocationPicked($event)"></app-map>
+      </div>
+
+      <button type="submit" class="btn-submit">Save Changes</button>
+    </form>
+  </div>
+</div>

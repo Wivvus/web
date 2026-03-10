@@ -15,11 +15,19 @@ import { MapComponent, LatLng } from '../../map/map.component';
 })
 export class CreateEventComponent {
     event: Event = new Event();
+    startDate: string = "";
+    startTime: string = "";
 
     constructor(
         private apiService: ApiService,
         private router: Router
     ) {}
+
+    onDateTimeChange(): void {
+        if (this.startDate && this.startTime) {
+            this.event.start_time = `${this.startDate}T${this.startTime}:00Z`;
+        }
+    }
 
     onLocationPicked(location: LatLng): void {
         this.event.location = { lat: location.lat, long: location.lng };

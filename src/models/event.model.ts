@@ -7,6 +7,10 @@ export class Event {
   constructor(
     public id: number = 0,
     public name: string = "",
+    public description: string = "",
+    public start_time: string | null = null,
+    public distance_km: number | null = null,
+    public pace_min_km: number | null = null,
     public location: Location = { lat: null, long: null },
   ) { }
 }

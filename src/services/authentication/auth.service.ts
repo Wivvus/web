@@ -64,7 +64,6 @@ export class AuthService {
     
     // Decode JWT to extract user info
     const payload = this.decodeJWT(idToken);
-    
     const userInfo: UserInfo = {
       email: payload.email,
       name: payload.name,

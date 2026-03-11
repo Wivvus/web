@@ -1,6 +1,7 @@
 <div class="detail-page" *ngIf="event">
   <header class="detail-header">
     <button class="btn-back" (click)="goBack()">&#8592;</button>
+    <span class="logo" (click)="goBack()">Wivvus</span>
     <h1>{{ event.name }}</h1>
     <div class="header-actions" *ngIf="isOwner">
       <button class="btn-edit" (click)="onEdit()">Edit</button>
@@ -31,18 +32,27 @@
 
     <p class="detail-description" *ngIf="event.description">{{ event.description }}</p>
 
-    <div class="attend-section" *ngIf="isLoggedIn">
-      <button class="btn-attend" *ngIf="!isAttending" (click)="onAttend()">Join this run</button>
-      <button class="btn-drop" *ngIf="isAttending" (click)="onDrop()">Drop out</button>
+    <div class="attend-section">
+      <ng-container *ngIf="isLoggedIn; else notLoggedIn">
+        <button class="btn-attend" *ngIf="!isAttending" (click)="onAttend()">Join this run</button>
+        <button class="btn-drop" *ngIf="isAttending" (click)="onDrop()">Drop out</button>
+      </ng-container>
+      <ng-template #notLoggedIn>
+        <button class="btn-attend" (click)="joinRun()">Join this run</button>
+      </ng-template>
     </div>
 
-    <div class="attendees-section" *ngIf="isLoggedIn">
+    <div class="attendees-section">
       <h3 class="attendees-title">
         {{ event.attendee_count }} {{ event.attendee_count === 1 ? 'runner' : 'runners' }} attending
       </h3>
-      <div class="attendees-list" *ngIf="attendees.length > 0">
-        <div class="attendee" *ngFor="let a of attendees">
-          <img class="attendee-avatar" [src]="a.avatar_url" [alt]="a.name">
+      <p class="attendees-login-hint" *ngIf="!isLoggedIn">Login to see attendees</p>
+      <div class="attendees-list" *ngIf="isLoggedIn && attendees.length > 0">
+        <div class="attendee" *ngFor="let a of attendees; trackBy: trackByName">
+          <div class="attendee-avatar">
+            <span class="avatar-initials">{{ a.name.charAt(0) }}</span>
+            <img *ngIf="a.avatar_url" [src]="a.avatar_url" [alt]="a.name" (error)="$any($event.target).style.display='none'">
+          </div>
           <span class="attendee-name">{{ a.name }}</span>
         </div>
       </div>

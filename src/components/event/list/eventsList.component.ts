@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { AuthService, UserInfo } from '../../../services/authentication/auth.service';
 import { ApiService, UserData, UserProfile } from '../../../services/api/api.service';
 import { EventsListViewComponent } from "../listView/eventListView.component";
@@ -19,8 +20,13 @@ export class EventsListComponent implements OnInit {
     events: Event[] = new Array()
 
     constructor(
-        private apiService: ApiService
+        private apiService: ApiService,
+        private router: Router
     ) {}
+
+    goHome(): void {
+        this.router.navigate(['/']);
+    }
 
     ngOnInit(): void {
         var cpnt = this

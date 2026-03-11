@@ -27,22 +27,30 @@ export class EventDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
+    const autoAttend = this.route.snapshot.queryParamMap.get('attend') === 'true';
+
     this.apiService.getEvent(id).subscribe({
       next: event => {
         this.event = event;
         if (this.isLoggedIn) {
-          this.loadAttendees(id);
+          this.loadAttendees(id, autoAttend);
         }
       },
       error: () => this.router.navigate(['/'])
     });
   }
 
-  private loadAttendees(id: number): void {
+  private loadAttendees(id: number, autoAttend = false): void {
     this.apiService.getAttendees(id).subscribe({
       next: res => {
         this.attendees = res.attendees;
         this.isAttending = res.is_attending;
+        if (this.event) this.event.attendee_count = res.attendees.length;
+        if (autoAttend && !res.is_attending) {
+          this.apiService.attend(id).subscribe({
+            next: () => this.loadAttendees(id)
+          });
+        }
       }
     });
   }
@@ -61,6 +69,13 @@ export class EventDetailComponent implements OnInit {
   get isOwner(): boolean {
     const user = this.authService.getUser();
     return !!user && !!this.event && !!user.db_id && this.event.creator_id === user.db_id;
+  }
+
+  joinRun(): void {
+    const returnUrl = `/events/${this.event!.id}?attend=true`;
+    this.router.navigate(['/login'], {
+      queryParams: { returnUrl, message: 'Login to join a run' }
+    });
   }
 
   onAttend(): void {
@@ -89,7 +104,11 @@ export class EventDetailComponent implements OnInit {
     });
   }
 
-  goBack(): void {
+  trackByName(_: number, a: { name: string }): string {
+    return a.name;
+  }
+
+goBack(): void {
     this.router.navigate(['/']);
   }
 }

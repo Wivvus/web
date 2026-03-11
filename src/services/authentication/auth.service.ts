@@ -204,16 +204,16 @@ export class AuthService {
   /**
    * Logout user
    */
-  public logout(): void {
+  public logout(returnUrl: string = '/'): void {
     sessionStorage.removeItem('id_token');
     sessionStorage.removeItem('user_info');
     this.tokenSubject.next(null);
     this.userSubject.next(null);
-    
+
     if (typeof google !== 'undefined') {
       google.accounts.id.disableAutoSelect();
     }
-    
-    this.router.navigate(['/login']);
+
+    this.router.navigateByUrl(returnUrl);
   }
 }

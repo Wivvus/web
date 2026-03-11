@@ -9,7 +9,7 @@
   z-index: 100;
   background: var(--red);
   height: var(--header-height);
-  padding: 0 1rem;
+  padding: 0 7rem 0 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -19,6 +19,8 @@
     color: var(--white);
     font-size: 1.2rem;
     font-weight: 700;
+
+    &.logo { cursor: pointer; }
   }
 }
 
@@ -41,7 +43,7 @@
 /* ---------- Tablet / Desktop ---------- */
 @media (min-width: 768px) {
   .events-header {
-    padding: 0 2rem;
+    padding: 0 7.5rem 0 2rem;
     h1 { font-size: 1.4rem; }
   }
 

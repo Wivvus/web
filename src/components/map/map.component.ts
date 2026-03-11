@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy, ViewChild, ElementRef, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 
 const defaultIcon = L.icon({
@@ -33,38 +33,64 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private map?: L.Map;
   private marker?: L.Marker;
+  private watchId?: number;
+
+  constructor(private ngZone: NgZone) {}
 
   ngAfterViewInit(): void {
-    this.map = L.map(this.mapEl.nativeElement, {
-      zoom: 13,
-      center: [43.530147, 16.488932]
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(this.map);
-
-    if (this.pin) {
-      this.marker = L.marker([this.pin.lat, this.pin.lng], { icon: defaultIcon }).addTo(this.map);
-      this.map.setView([this.pin.lat, this.pin.lng], 13);
-    } else if (!this.readonly) {
-      navigator.geolocation.getCurrentPosition(
-        pos => this.map?.setView([pos.coords.latitude, pos.coords.longitude], 13),
-        () => {}
-      );
-    }
-
-    if (!this.readonly) {
-      this.map.on('click', (e: L.LeafletMouseEvent) => {
-        const { lat, lng } = e.latlng;
-        this.marker?.remove();
-        this.marker = L.marker([lat, lng], { icon: defaultIcon }).addTo(this.map!);
-        this.locationPicked.emit({ lat, lng });
+    setTimeout(() => {
+      this.map = L.map(this.mapEl.nativeElement, {
+        zoom: 2,
+        center: [20, 0]
       });
-    }
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(this.map);
+
+      if (this.pin) {
+        this.marker = L.marker([this.pin.lat, this.pin.lng], { icon: defaultIcon }).addTo(this.map);
+        this.map.setView([this.pin.lat, this.pin.lng], 13);
+      } else if (!this.readonly) {
+        this.centerOnUserLocation();
+      }
+
+      if (!this.readonly) {
+        this.map.on('click', (e: L.LeafletMouseEvent) => {
+          const { lat, lng } = e.latlng;
+          this.marker?.remove();
+          this.marker = L.marker([lat, lng], { icon: defaultIcon }).addTo(this.map!);
+          this.locationPicked.emit({ lat, lng });
+        });
+      }
+    });
+  }
+
+  private centerOnUserLocation(): void {
+    if (!navigator.geolocation) return;
+
+    this.watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        this.ngZone.run(() => {
+          const { latitude, longitude, accuracy } = pos.coords;
+          const zoom = accuracy <= 100 ? 15 : accuracy <= 1000 ? 13 : accuracy <= 5000 ? 11 : 9;
+          this.map?.setView([latitude, longitude], zoom);
+
+          if (accuracy <= 500 && this.watchId !== undefined) {
+            navigator.geolocation.clearWatch(this.watchId);
+            this.watchId = undefined;
+          }
+        });
+      },
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 30000 }
+    );
   }
 
   ngOnDestroy(): void {
+    if (this.watchId !== undefined) {
+      navigator.geolocation.clearWatch(this.watchId);
+    }
     this.map?.remove();
   }
 }

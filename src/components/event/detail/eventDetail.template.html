@@ -2,7 +2,6 @@
   <header class="detail-header">
     <button class="btn-back" (click)="goBack()">&#8592;</button>
     <span class="logo" (click)="goBack()">Wivvus</span>
-    <h1>{{ event.name }}</h1>
     <div class="header-actions" *ngIf="isOwner">
       <button class="btn-edit" (click)="onEdit()">Edit</button>
       <button class="btn-delete" (click)="onDelete()">Delete</button>
@@ -14,6 +13,7 @@
   </div>
 
   <div class="detail-content">
+    <h1 class="event-title">{{ event.name }}</h1>
 
     <div class="detail-stats" *ngIf="event.distance_km || event.pace_min_km || event.start_time">
       <div class="stat" *ngIf="event.start_time">

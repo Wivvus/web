@@ -20,7 +20,8 @@ export class AppComponent {
   }
 
   get isLoginPage(): boolean {
-    return this.router.url.startsWith('/login');
+    const url = this.router.url;
+    return url.startsWith('/login') || url.startsWith('/register') || url.startsWith('/set-password');
   }
 
   goToLogin(): void {

@@ -1,4 +1,4 @@
-.login-container {
+.register-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,7 +8,7 @@
   padding: 1.5rem;
 }
 
-.login-card {
+.register-card {
   background: var(--white);
   padding: 2rem 1.5rem;
   border-radius: var(--radius-lg);
@@ -16,12 +16,10 @@
   text-align: center;
   width: 100%;
   max-width: 380px;
-
-  /* Yellow top accent bar */
   border-top: 5px solid var(--yellow);
 }
 
-.login-logo {
+.register-logo {
   font-size: 2rem;
   font-weight: 700;
   color: var(--red);
@@ -35,13 +33,13 @@ h1 {
   margin-bottom: 0.25rem;
 }
 
-.login-subtitle {
+.register-subtitle {
   font-size: 0.9rem;
   color: var(--text-muted);
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
-.login-message {
+.register-error {
   font-size: 0.875rem;
   color: var(--red);
   background: var(--red-light);
@@ -51,53 +49,28 @@ h1 {
   margin-bottom: 1rem;
 }
 
-.google-button-container {
-  display: flex;
-  justify-content: center;
-  margin: 1.5rem 0;
+.register-info {
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
 }
 
-.divider {
+.form-group {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin: 0.5rem 0;
-  color: var(--text-muted);
-  font-size: 0.8rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
 
-  &::before, &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--black);
   }
 }
 
-.btn-email {
-  width: 100%;
-  min-height: 40px;
-  padding: 0.5rem 1rem;
-  background: var(--white);
-  color: var(--black);
-  border: 1.5px solid var(--border);
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  font-family: var(--font);
-  cursor: pointer;
-  transition: border-color 0.15s;
-
-  &:hover { border-color: var(--red); }
-}
-
-.email-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  width: 100%;
-}
-
-.email-input {
+.form-input {
   width: 100%;
   padding: 0.65rem 0.875rem;
   font-family: var(--font);
@@ -116,9 +89,13 @@ h1 {
   }
 }
 
-.btn-email-submit {
+.btn-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   min-height: 44px;
+  margin-top: 0.5rem;
   background: var(--red);
   color: var(--white);
   border: none;
@@ -133,10 +110,10 @@ h1 {
   &:disabled { opacity: 0.6; cursor: default; }
 }
 
-.register-link {
+.login-link {
   font-size: 0.85rem;
   color: var(--text-muted);
-  margin-top: 0.75rem;
+  margin-top: 1.5rem;
 
   span {
     color: var(--red);
@@ -144,20 +121,4 @@ h1 {
     cursor: pointer;
     &:hover { text-decoration: underline; }
   }
-}
-
-.disclaimer {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 1.5rem;
-  line-height: 1.5;
-}
-
-/* ---------- Tablet / Desktop ---------- */
-@media (min-width: 768px) {
-  .login-card {
-    padding: 3rem 2.5rem;
-  }
-
-  h1 { font-size: 1.75rem; }
 }

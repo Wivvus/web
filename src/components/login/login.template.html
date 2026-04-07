@@ -7,6 +7,25 @@
 
     <div #googleButton class="google-button-container"></div>
 
+    <div class="divider"><span>or</span></div>
+
+    <ng-container *ngIf="!emailLogin">
+      <button class="btn-email" (click)="emailLogin = true">Continue with email</button>
+    </ng-container>
+
+    <ng-container *ngIf="emailLogin">
+      <p *ngIf="loginError" class="login-message">{{ loginError }}</p>
+      <form (ngSubmit)="submitEmailLogin()" class="email-form">
+        <input type="email" [(ngModel)]="email" name="email" placeholder="Email" class="email-input" required>
+        <input type="password" [(ngModel)]="password" name="password" placeholder="Password" class="email-input" required>
+        <button type="submit" class="btn-email-submit" [disabled]="loading">
+          {{ loading ? 'Signing in...' : 'Sign in' }}
+        </button>
+      </form>
+    </ng-container>
+
+    <p class="register-link">Don't have an account? <span (click)="goToRegister()">Sign up</span></p>
+
     <p class="disclaimer">
       By signing in, you agree to our Terms of Service and Privacy Policy.
     </p>

@@ -1,0 +1,51 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-logo">Wivvus</div>
+    <h1>Create account</h1>
+
+    <ng-container *ngIf="!submitted; else checkEmail">
+      <p class="register-subtitle">Enter your details to get started</p>
+      <p *ngIf="error" class="register-error">{{ error }}</p>
+
+      <form (ngSubmit)="onSubmit()" #f="ngForm">
+        <div class="form-group">
+          <label for="name">Full name</label>
+          <input
+            id="name"
+            type="text"
+            [(ngModel)]="name"
+            name="name"
+            required
+            placeholder="Your name"
+            class="form-input"
+          >
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            required
+            placeholder="you@example.com"
+            class="form-input"
+          >
+        </div>
+        <button type="submit" class="btn-submit" [disabled]="loading">
+          {{ loading ? 'Sending...' : 'Continue' }}
+        </button>
+      </form>
+    </ng-container>
+
+    <ng-template #checkEmail>
+      <p class="register-subtitle">Check your email</p>
+      <p class="register-info">
+        We sent a verification link to <strong>{{ email }}</strong>.
+        Click it to set your password and activate your account.
+      </p>
+    </ng-template>
+
+    <p class="login-link">Already have an account? <span (click)="goToLogin()">Sign in</span></p>
+  </div>
+</div>

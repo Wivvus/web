@@ -13,6 +13,7 @@ export interface UserInfo {
   picture: string;
   sub: string;
   db_id?: number;
+  provider?: 'google' | 'local';
 }
 
 @Injectable({
@@ -204,9 +205,46 @@ export class AuthService {
   /**
    * Logout user
    */
+  public registerWithEmail(email: string, name: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/auth/register`, { email, name });
+  }
+
+  public setPassword(token: string, password: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/auth/set-password`, { token, password });
+  }
+
+  public loginWithEmail(email: string, password: string): Observable<any> {
+    return this.http.post<{ token: string, user: { id: number, name: string, email: string, avatar_url: string } }>(
+      `${environment.apiUrl}/auth/login`, { email, password }
+    );
+  }
+
+  public handleLocalAuthResponse(token: string, user: { id: number, name: string, email: string, avatar_url: string }): void {
+    const userInfo: UserInfo = {
+      email: user.email,
+      name: user.name,
+      picture: user.avatar_url || '',
+      sub: String(user.id),
+      db_id: user.id,
+      provider: 'local'
+    };
+    this.setToken(token);
+    this.setProvider('local');
+    this.setUser(userInfo);
+  }
+
+  public getProvider(): string {
+    return sessionStorage.getItem('auth_provider') || 'google';
+  }
+
+  private setProvider(provider: string): void {
+    sessionStorage.setItem('auth_provider', provider);
+  }
+
   public logout(returnUrl: string = '/'): void {
     sessionStorage.removeItem('id_token');
     sessionStorage.removeItem('user_info');
+    sessionStorage.removeItem('auth_provider');
     this.tokenSubject.next(null);
     this.userSubject.next(null);
 

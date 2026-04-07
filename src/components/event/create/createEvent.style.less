@@ -64,6 +64,12 @@
 .form-input {
   width: 100%;
   padding: 0.65rem 0.875rem;
+
+  &:disabled {
+    background: var(--bg);
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
   font-family: var(--font);
   font-size: 1rem;
   color: var(--text);
@@ -91,6 +97,18 @@
 .form-textarea {
   min-height: 80px;
   resize: vertical;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--text);
+  cursor: pointer;
+  margin-top: 0.4rem;
+
+  input[type=checkbox] { cursor: pointer; accent-color: var(--red); }
 }
 
 .form-error {

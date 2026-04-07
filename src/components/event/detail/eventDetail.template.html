@@ -24,9 +24,9 @@
         <span class="stat-label">Distance</span>
         <span class="stat-value">{{ event.distance_km }} km</span>
       </div>
-      <div class="stat" *ngIf="event.pace_min_km">
+      <div class="stat" *ngIf="event.all_paces || event.pace_min_km">
         <span class="stat-label">Pace</span>
-        <span class="stat-value">{{ event.pace_min_km }} min/km</span>
+        <span class="stat-value">{{ event.all_paces ? 'All paces welcome' : event.pace_min_km + ' min/km' }}</span>
       </div>
     </div>
 

@@ -22,6 +22,7 @@ export class Event {
     public start_time: string = "",
     public distance_km: number | null = null,
     public pace_min_km: number | null = null,
+    public all_paces: boolean = false,
     public location: Location = { lat: null, long: null },
     public creator_id: number = 0,
     public attendee_count: number = 0,

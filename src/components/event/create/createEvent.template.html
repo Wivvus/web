@@ -82,7 +82,11 @@
             placeholder="e.g. 5.5"
             min="0"
             step="0.1"
+            [attr.disabled]="event.all_paces ? true : null"
           >
+          <label class="checkbox-label">
+            <input type="checkbox" name="all_paces" [(ngModel)]="event.all_paces"> All paces welcome
+          </label>
         </div>
       </div>
 

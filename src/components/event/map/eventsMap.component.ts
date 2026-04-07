@@ -83,7 +83,7 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
         : '';
       const chips = [
         ...(event.distance_km ? [`${event.distance_km} km`] : []),
-        ...(event.pace_min_km ? [`${event.pace_min_km} min/km`] : [])
+        ...(event.all_paces ? ['All paces welcome'] : (event.pace_min_km ? [`${event.pace_min_km} min/km`] : []))
       ].map(t => `<span style="font-size:0.75rem;font-weight:600;color:#d32f2f;background:#fdecea;border-radius:999px;padding:0.15rem 0.55rem;">${t}</span>`).join(' ');
 
       const marker = L.marker([lat, lng], { icon: defaultIcon })

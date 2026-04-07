@@ -1,3 +1,14 @@
+export interface EventFilters {
+  minPace?: number;
+  maxPace?: number;
+  minLength?: number;
+  maxLength?: number;
+  maxRadius?: number;
+  userLat?: number;
+  userLng?: number;
+  dateFrom?: string;
+}
+
 export interface Location {
   lat: number | null;
   long: number | null;

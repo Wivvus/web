@@ -1,0 +1,210 @@
+.filters-panel {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  &.floating {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1000;
+    width: 230px;
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.filters-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filters-badge {
+  color: var(--red);
+  font-size: 0.6rem;
+}
+
+.filters-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle-icon {
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.btn-clear {
+  font-size: 0.8rem;
+  font-family: var(--font);
+  color: var(--red);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-weight: 600;
+  &:hover { text-decoration: underline; }
+}
+
+.filters-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow: hidden;
+  max-height: 500px;
+  transition: max-height 0.2s ease, opacity 0.2s ease, margin-top 0.2s ease;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+.filters-panel.collapsed .filters-body {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.filter-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.filter-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.range-values {
+  font-size: 0.8rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Dual range slider */
+.dual-range {
+  position: relative;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--border); /* overridden by [style.background] binding */
+
+  input[type=range] {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    pointer-events: none;
+    margin: 0;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--white);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      pointer-events: all;
+      cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--white);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      pointer-events: all;
+      cursor: pointer;
+    }
+  }
+}
+
+/* Single-handle range slider */
+.single-range {
+  position: relative;
+  height: 20px;
+  border-radius: 4px;
+
+  input[type=range] {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    margin: 0;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--white);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--white);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      cursor: pointer;
+    }
+  }
+}
+
+.filter-input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  font-family: var(--font);
+  font-size: 0.875rem;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  background: var(--white);
+  transition: border-color 0.15s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--red);
+  }
+}

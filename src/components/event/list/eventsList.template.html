@@ -10,16 +10,22 @@
   </div>
 
   @if (view === 'list') {
-    <div class="events-content">
-      @for (event of events; track event.id) {
-        <eventListView [event]="event"></eventListView>
-      } @empty {
-        <p class="empty-state">No events yet. Be the first to create one!</p>
-      }
+    <div class="list-layout">
+      <aside class="filters-sidebar">
+        <event-filters (filtersChange)="onFiltersChange($event)"></event-filters>
+      </aside>
+      <div class="events-content">
+        @for (event of events; track event.id) {
+          <eventListView [event]="event"></eventListView>
+        } @empty {
+          <p class="empty-state">No events yet. Be the first to create one!</p>
+        }
+      </div>
     </div>
   } @else {
     <div class="map-view">
-      <events-map></events-map>
+      <event-filters [floating]="true" (filtersChange)="onFiltersChange($event)"></event-filters>
+      <events-map [filters]="filters"></events-map>
     </div>
   }
 </div>

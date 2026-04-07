@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Event } from '../../models/event.model';
+import { Event, EventFilters } from '../../models/event.model';
 export interface UserData {
   message: string;
   user: {
@@ -32,12 +32,24 @@ export class ApiService {
       return this.http.post(`${this.apiUrl}/event`, event)
   }
 
-  getEvents(bbox?: { latMin: number, latMax: number, lngMin: number, lngMax: number }): Observable<Event[]> {
+  getEvents(
+    bbox?: { latMin: number, latMax: number, lngMin: number, lngMax: number },
+    filters?: EventFilters
+  ): Observable<Event[]> {
+    const parts: string[] = [];
     if (bbox) {
-      const params = `lat_min=${bbox.latMin}&lat_max=${bbox.latMax}&lng_min=${bbox.lngMin}&lng_max=${bbox.lngMax}`;
-      return this.http.get<Event[]>(`${this.apiUrl}/events?${params}`);
+      parts.push(`lat_min=${bbox.latMin}&lat_max=${bbox.latMax}&lng_min=${bbox.lngMin}&lng_max=${bbox.lngMax}`);
     }
-    return this.http.get<Event[]>(`${this.apiUrl}/events`);
+    if (filters?.minPace) parts.push(`min_pace=${filters.minPace}`);
+    if (filters?.maxPace) parts.push(`max_pace=${filters.maxPace}`);
+    if (filters?.minLength) parts.push(`min_length=${filters.minLength}`);
+    if (filters?.maxLength) parts.push(`max_length=${filters.maxLength}`);
+    if (filters?.maxRadius && filters?.userLat && filters?.userLng) {
+      parts.push(`max_radius=${filters.maxRadius}&user_lat=${filters.userLat}&user_lng=${filters.userLng}`);
+    }
+    if (filters?.dateFrom) parts.push(`date_from=${filters.dateFrom}`);
+    const qs = parts.length ? `?${parts.join('&')}` : '';
+    return this.http.get<Event[]>(`${this.apiUrl}/events${qs}`);
   }
 
   getEvent(id: number): Observable<Event> {

@@ -32,8 +32,12 @@ export class ApiService {
       return this.http.post(`${this.apiUrl}/event`, event)
   }
 
-  getEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(`${this.apiUrl}/events`)
+  getEvents(bbox?: { latMin: number, latMax: number, lngMin: number, lngMax: number }): Observable<Event[]> {
+    if (bbox) {
+      const params = `lat_min=${bbox.latMin}&lat_max=${bbox.latMax}&lng_min=${bbox.lngMin}&lng_max=${bbox.lngMax}`;
+      return this.http.get<Event[]>(`${this.apiUrl}/events?${params}`);
+    }
+    return this.http.get<Event[]>(`${this.apiUrl}/events`);
   }
 
   getEvent(id: number): Observable<Event> {

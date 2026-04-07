@@ -17,6 +17,8 @@ export class EditEventComponent implements OnInit {
   event?: Event;
   startDate: string = "";
   startTime: string = "";
+  error: string | null = null;
+  loading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,9 +62,21 @@ export class EditEventComponent implements OnInit {
 
   onSubmit(): void {
     if (!this.event) return;
+    this.error = null;
+    if (!this.event.name.trim()) { this.error = 'Event name is required.'; return; }
+    if (!this.event.location.lat || !this.event.location.long) { this.error = 'Please pick a location on the map.'; return; }
+    if (!this.event.start_time) { this.error = 'Start date and time are required.'; return; }
+    this.loading = true;
     this.apiService.updateEvent(this.event.id, this.event).subscribe({
       next: () => this.router.navigate(['/events', this.event!.id]),
-      error: () => {}
+      error: (err) => {
+        this.loading = false;
+        if (err.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          this.error = err.error?.error || 'Failed to save changes. Please try again.';
+        }
+      }
     });
   }
 

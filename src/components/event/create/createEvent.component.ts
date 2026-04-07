@@ -17,6 +17,8 @@ export class CreateEventComponent {
     event: Event = new Event();
     startDate: string = "";
     startTime: string = "";
+    error: string | null = null;
+    loading = false;
 
     constructor(
         private apiService: ApiService,
@@ -38,12 +40,21 @@ export class CreateEventComponent {
     }
 
     onSubmit(): void {
-        const me = this;
+        this.error = null;
+        if (!this.event.name.trim()) { this.error = 'Event name is required.'; return; }
+        if (!this.event.location.lat || !this.event.location.long) { this.error = 'Please pick a location on the map.'; return; }
+        if (!this.event.start_time) { this.error = 'Start date and time are required.'; return; }
+        this.loading = true;
         this.apiService.createEvent(this.event).subscribe({
-            next() { me.router.navigate(['/']); },
-            error(err) {
-                if (err.status == 401) { me.router.navigate(['/login']); }
-            },
+            next: () => this.router.navigate(['/']),
+            error: (err) => {
+                this.loading = false;
+                if (err.status === 401) {
+                    this.router.navigate(['/login']);
+                } else {
+                    this.error = err.error?.error || 'Failed to create event. Please try again.';
+                }
+            }
         });
     }
 }

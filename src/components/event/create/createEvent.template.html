@@ -91,7 +91,10 @@
         <app-map [height]="200" [width]="480" (locationPicked)="onLocationPicked($event)"></app-map>
       </div>
 
-      <button type="submit" class="btn-submit">Create Event</button>
+      <p *ngIf="error" class="form-error">{{ error }}</p>
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        {{ loading ? 'Creating...' : 'Create Event' }}
+      </button>
     </form>
   </div>
 </div>

@@ -4,11 +4,22 @@
     <create-event-button></create-event-button>
   </header>
 
-  <div class="events-content">
-    @for (event of events; track event.id) {
-      <eventListView [event]="event"></eventListView>
-    } @empty {
-      <p class="empty-state">No events yet. Be the first to create one!</p>
-    }
+  <div class="view-tabs">
+    <button class="tab-btn" [class.active]="view === 'list'" (click)="view = 'list'">List</button>
+    <button class="tab-btn" [class.active]="view === 'map'" (click)="view = 'map'">Map</button>
   </div>
+
+  @if (view === 'list') {
+    <div class="events-content">
+      @for (event of events; track event.id) {
+        <eventListView [event]="event"></eventListView>
+      } @empty {
+        <p class="empty-state">No events yet. Be the first to create one!</p>
+      }
+    </div>
+  } @else {
+    <div class="map-view">
+      <events-map></events-map>
+    </div>
+  }
 </div>

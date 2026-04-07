@@ -51,7 +51,10 @@
         <app-map [height]="200" [pin]="pin" (locationPicked)="onLocationPicked($event)"></app-map>
       </div>
 
-      <button type="submit" class="btn-submit">Save Changes</button>
+      <p *ngIf="error" class="form-error">{{ error }}</p>
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        {{ loading ? 'Saving...' : 'Save Changes' }}
+      </button>
     </form>
   </div>
 </div>

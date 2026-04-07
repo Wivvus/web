@@ -1,4 +1,11 @@
 <div class="event-card" (click)="onClick()">
-  <h2 class="event-name">{{ event.name }}</h2>
-  <p class="event-desc">{{ event.description }}</p>
+  <div class="event-header">
+    <h2 class="event-name">{{ event.name }}</h2>
+    <span *ngIf="formattedDate" class="event-date">{{ formattedDate }} · {{ formattedTime }}</span>
+  </div>
+  <p *ngIf="event.description" class="event-desc">{{ event.description }}</p>
+  <div class="event-meta" *ngIf="event.distance_km || event.pace_min_km">
+    <span *ngIf="event.distance_km" class="meta-chip">{{ event.distance_km }} km</span>
+    <span *ngIf="event.pace_min_km" class="meta-chip">{{ event.pace_min_km }} min/km</span>
+  </div>
 </div>

@@ -18,4 +18,18 @@ export class EventsListViewComponent {
     onClick(): void {
         this.router.navigate(['/events', this.event.id]);
     }
+
+    get formattedDate(): string {
+        if (!this.event.start_time) return '';
+        return new Date(this.event.start_time).toLocaleDateString(undefined, {
+            weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+        });
+    }
+
+    get formattedTime(): string {
+        if (!this.event.start_time) return '';
+        return new Date(this.event.start_time).toLocaleTimeString(undefined, {
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
 }

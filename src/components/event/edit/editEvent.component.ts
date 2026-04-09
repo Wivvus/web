@@ -50,7 +50,11 @@ export class EditEventComponent implements OnInit {
 
   onDateTimeChange(): void {
     if (this.event && this.startDate && this.startTime) {
-      this.event.start_time = `${this.startDate}T${this.startTime}:00`;
+      const offset = new Date().getTimezoneOffset();
+      const sign = offset <= 0 ? '+' : '-';
+      const h = String(Math.floor(Math.abs(offset) / 60)).padStart(2, '0');
+      const m = String(Math.abs(offset) % 60).padStart(2, '0');
+      this.event.start_time = `${this.startDate}T${this.startTime}:00${sign}${h}:${m}`;
     }
   }
 

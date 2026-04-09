@@ -33,8 +33,8 @@ export class EditEventComponent implements OnInit {
         this.event = event;
         if (event.start_time) {
           const dt = new Date(event.start_time);
-          this.startDate = dt.toISOString().slice(0, 10);
-          this.startTime = dt.toISOString().slice(11, 16);
+          this.startDate = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+          this.startTime = `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
         }
       },
       error: () => this.router.navigate(['/'])

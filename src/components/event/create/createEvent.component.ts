@@ -31,7 +31,7 @@ export class CreateEventComponent {
 
     onDateTimeChange(): void {
         if (this.startDate && this.startTime) {
-            this.event.start_time = `${this.startDate}T${this.startTime}:00Z`;
+            this.event.start_time = `${this.startDate}T${this.startTime}:00`;
         }
     }
 

@@ -50,7 +50,7 @@ export class EditEventComponent implements OnInit {
 
   onDateTimeChange(): void {
     if (this.event && this.startDate && this.startTime) {
-      this.event.start_time = `${this.startDate}T${this.startTime}:00Z`;
+      this.event.start_time = `${this.startDate}T${this.startTime}:00`;
     }
   }
 

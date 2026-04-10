@@ -26,6 +26,14 @@ export class EventsListViewComponent {
         });
     }
 
+    get shortDescription(): string {
+        if (!this.event.description) return '';
+        const firstLine = this.event.description.split('\n')[0];
+        const truncated = firstLine.length > 50 ? firstLine.slice(0, 50) : firstLine;
+        const needsEllipsis = truncated.length < this.event.description.length;
+        return needsEllipsis ? `${truncated}…` : truncated;
+    }
+
     get formattedTime(): string {
         if (!this.event.start_time) return '';
         return new Date(this.event.start_time).toLocaleTimeString(undefined, {

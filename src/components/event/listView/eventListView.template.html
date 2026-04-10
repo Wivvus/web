@@ -3,7 +3,7 @@
     <h2 class="event-name">{{ event.name }}</h2>
     <span *ngIf="formattedDate" class="event-date">{{ formattedDate }} · {{ formattedTime }}</span>
   </div>
-  <p *ngIf="event.description" class="event-desc">{{ event.description }}</p>
+  <p *ngIf="event.description" class="event-desc">{{ shortDescription }}</p>
   <div class="event-meta" *ngIf="event.distance_km || event.pace_min_km || event.all_paces">
     <span *ngIf="event.distance_km" class="meta-chip">{{ event.distance_km }} km</span>
     <span *ngIf="event.all_paces" class="meta-chip">All paces welcome</span>

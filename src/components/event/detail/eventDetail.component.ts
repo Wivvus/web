@@ -102,6 +102,7 @@ export class EventDetailComponent implements OnInit {
 
   onDelete(): void {
     if (!this.event) return;
+    if (!confirm(`Delete "${this.event.name}"? This cannot be undone.`)) return;
     this.apiService.deleteEvent(this.event.id).subscribe({
       next: () => this.router.navigate(['/']),
       error: () => {}

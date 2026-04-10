@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { AuthService } from '../../../services/authentication/auth.service';
@@ -22,7 +23,8 @@ export class EventDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private title: Title
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +34,7 @@ export class EventDetailComponent implements OnInit {
     this.apiService.getEvent(id).subscribe({
       next: event => {
         this.event = event;
+        this.title.setTitle(event.name);
         if (this.isLoggedIn) {
           this.loadAttendees(id, autoAttend);
         }

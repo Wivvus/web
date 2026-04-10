@@ -1,8 +1,7 @@
 <div class="events-page">
-  <header class="events-header">
-    <h1 class="logo" (click)="goHome()">Wivvus</h1>
+  <app-header>
     <create-event-button></create-event-button>
-  </header>
+  </app-header>
 
   <div class="view-tabs">
     <button class="tab-btn" [class.active]="view === 'list'" (click)="view = 'list'">List</button>

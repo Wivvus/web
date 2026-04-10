@@ -1,12 +1,10 @@
 <div class="detail-page" *ngIf="event">
-  <header class="detail-header">
-    <button class="btn-back" (click)="goBack()">&#8592;</button>
-    <span class="logo" (click)="goBack()">Wivvus</span>
-    <div class="header-actions" *ngIf="isOwner">
+  <app-header [showBack]="true" [onBack]="goBack.bind(this)">
+    <div *ngIf="isOwner" class="owner-actions">
       <button class="btn-edit" (click)="onEdit()">Edit</button>
       <button class="btn-delete" (click)="onDelete()">Delete</button>
     </div>
-  </header>
+  </app-header>
 
   <div class="detail-map">
     <app-map [height]="280" [readonly]="true" [pin]="pin"></app-map>

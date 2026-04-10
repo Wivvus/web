@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api/api.service';
 import { Router } from '@angular/router';
 import { MapComponent, LatLng } from '../../map/map.component';
+import { HeaderComponent } from '../../header/header.component';
 
 @Component({
   selector: 'create-event',
   standalone: true,
-  imports: [CommonModule, FormsModule, MapComponent],
+  imports: [CommonModule, FormsModule, MapComponent, HeaderComponent],
   templateUrl: "./createEvent.template.html",
   styleUrl: "./createEvent.style.less"
 })

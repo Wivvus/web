@@ -64,6 +64,10 @@ export class ApiService {
     return this.http.delete(`${this.apiUrl}/event/${id}`);
   }
 
+  deleteAccount(): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/user`);
+  }
+
   getAttendees(id: number): Observable<{ attendees: { name: string, avatar_url: string }[], is_attending: boolean }> {
     return this.http.get<any>(`${this.apiUrl}/event/${id}/attendees`);
   }

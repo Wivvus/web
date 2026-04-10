@@ -1,13 +1,1 @@
 <router-outlet></router-outlet>
-<button
-  *ngIf="!isLoggedIn && !isLoginPage"
-  class="btn-global-login"
-  (click)="goToLogin()">
-  Login
-</button>
-<button
-  *ngIf="isLoggedIn && !isLoginPage"
-  class="btn-global-logout"
-  (click)="logout()">
-  Logout
-</button>

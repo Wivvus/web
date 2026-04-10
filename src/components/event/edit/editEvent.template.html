@@ -1,8 +1,5 @@
 <div class="edit-event-page" *ngIf="event">
-  <header class="edit-header">
-    <button class="btn-back" (click)="goBack()">&#8592;</button>
-    <span class="logo" (click)="goBack()">Wivvus</span>
-  </header>
+  <app-header [showBack]="true" [onBack]="goBack.bind(this)"></app-header>
 
   <div class="edit-content">
     <h1 class="page-title">Edit Event</h1>

@@ -1,0 +1,147 @@
+:host {
+  display: block;
+}
+
+.account-page {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.account-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--red);
+  height: var(--header-height);
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+
+  .logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--white);
+    cursor: pointer;
+  }
+}
+
+.btn-back {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+}
+
+.account-content {
+  padding: 0.35rem 1rem 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--black);
+  margin: 0.75rem 0 0.5rem;
+  text-align: center;
+}
+
+.settings-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+  margin-top: 0.75rem;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.setting-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.setting-value {
+  font-size: 0.9rem;
+  color: var(--black);
+}
+
+.btn-logout {
+  width: 100%;
+  min-height: 44px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: var(--bg); }
+}
+
+.danger-card {
+  border: 1.5px solid var(--red);
+}
+
+.danger-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--red);
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.danger-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
+.btn-delete {
+  width: 100%;
+  min-height: 44px;
+  background: var(--red);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: var(--red-dark); }
+}
+
+@media (min-width: 768px) {
+  .account-header { padding: 0 2rem; }
+  .account-content { padding: 0.5rem 2rem 1.5rem; }
+  .settings-card { padding: 1.25rem 1.5rem; }
+}

@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       next: (res: any) => {
         this.authService.handleLocalAuthResponse(res.token, res.user);
         this.router.navigateByUrl(this.authService.redirectAfterLogin);
-        this.authService.redirectAfterLogin = '/dashboard';
+        this.authService.redirectAfterLogin = '/';
       },
       error: (err) => {
         this.loginError = err.error?.error || 'Invalid email or password';

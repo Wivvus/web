@@ -1,0 +1,23 @@
+<header class="app-header">
+  <div class="header-left">
+    <button *ngIf="showBack" class="btn-back" (click)="handleBack()">&#8592;</button>
+    <span class="logo" (click)="goHome()">Wivvus</span>
+  </div>
+
+  <div class="header-right">
+    <ng-content></ng-content>
+
+    <button *ngIf="!isLoggedIn" class="btn-login" (click)="goToLogin()">Login</button>
+
+    <div *ngIf="isLoggedIn" class="profile-menu">
+      <button class="btn-profile" (click)="toggleDropdown()">
+        <img *ngIf="userPicture; else initial" [src]="userPicture" alt="Profile" class="profile-img" referrerpolicy="no-referrer">
+        <ng-template #initial><span class="profile-initial">{{ userInitial }}</span></ng-template>
+      </button>
+      <div class="profile-dropdown" *ngIf="dropdownOpen">
+        <button class="dropdown-item" (click)="goToAccount()">Account Settings</button>
+        <button class="dropdown-item dropdown-item--danger" (click)="logout()">Log out</button>
+      </div>
+    </div>
+  </div>
+</header>

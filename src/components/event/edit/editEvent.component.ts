@@ -5,11 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { Event } from '../../../models/event.model';
 import { MapComponent, LatLng } from '../../map/map.component';
+import { HeaderComponent } from '../../header/header.component';
 
 @Component({
   selector: 'edit-event',
   standalone: true,
-  imports: [CommonModule, FormsModule, MapComponent],
+  imports: [CommonModule, FormsModule, MapComponent, HeaderComponent],
   templateUrl: './editEvent.template.html',
   styleUrl: './editEvent.style.less'
 })

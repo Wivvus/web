@@ -6,11 +6,12 @@ import { ApiService } from '../../../services/api/api.service';
 import { AuthService } from '../../../services/authentication/auth.service';
 import { Event } from '../../../models/event.model';
 import { MapComponent, LatLng } from '../../map/map.component';
+import { HeaderComponent } from '../../header/header.component';
 
 @Component({
   selector: 'event-detail',
   standalone: true,
-  imports: [CommonModule, MapComponent],
+  imports: [CommonModule, MapComponent, HeaderComponent],
   templateUrl: './eventDetail.template.html',
   styleUrl: './eventDetail.style.less'
 })

@@ -1,0 +1,24 @@
+<div class="account-page">
+  <app-header [showBack]="true" [onBack]="goBack.bind(this)"></app-header>
+
+  <div class="account-content">
+    <h1 class="page-title">Account Settings</h1>
+
+    <div class="settings-card">
+      <div class="setting-row">
+        <span class="setting-label">Name</span>
+        <span class="setting-value">{{ name }}</span>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Email</span>
+        <span class="setting-value">{{ email }}</span>
+      </div>
+    </div>
+
+    <div class="settings-card danger-card">
+      <h2 class="danger-title">Danger Zone</h2>
+      <p class="danger-desc">Permanently delete your account and all your events. This cannot be undone.</p>
+      <button class="btn-delete" (click)="deleteAccount()">Delete Account</button>
+    </div>
+  </div>
+</div>

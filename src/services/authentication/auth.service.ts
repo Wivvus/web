@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -23,14 +23,14 @@ export class AuthService {
   private tokenSubject = new BehaviorSubject<string | null>(this.getStoredToken());
   private userSubject = new BehaviorSubject<UserInfo | null>(this.getStoredUser());
 
-  public redirectAfterLogin: string = '/dashboard';
+  public redirectAfterLogin: string = '/';
 
   public token$: Observable<string | null> = this.tokenSubject.asObservable();
   public user$: Observable<UserInfo | null> = this.userSubject.asObservable();
 
   private http: HttpClient;
 
-  constructor(private router: Router, httpBackend: HttpBackend) {
+  constructor(private router: Router, httpBackend: HttpBackend, private ngZone: NgZone) {
     this.http = new HttpClient(httpBackend);
 
     const user = this.getUser();
@@ -106,13 +106,17 @@ export class AuthService {
       next: res => {
         userInfo.db_id = res.user.id;
         this.setUser(userInfo);
-        this.router.navigateByUrl(this.redirectAfterLogin);
-        this.redirectAfterLogin = '/dashboard';
+        this.ngZone.run(() => {
+          this.router.navigateByUrl(this.redirectAfterLogin);
+          this.redirectAfterLogin = '/';
+        });
       },
       error: () => {
         this.setUser(userInfo);
-        this.router.navigateByUrl(this.redirectAfterLogin);
-        this.redirectAfterLogin = '/dashboard';
+        this.ngZone.run(() => {
+          this.router.navigateByUrl(this.redirectAfterLogin);
+          this.redirectAfterLogin = '/';
+        });
       }
     });
 

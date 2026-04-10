@@ -7,11 +7,12 @@ import { Event, EventFilters } from '../../../models/event.model';
 import { CreateEventButtonComponent } from '../createButton/createEventButton.component';
 import { EventsMapComponent } from '../map/eventsMap.component';
 import { EventFiltersComponent } from '../filters/eventFilters.component';
+import { HeaderComponent } from '../../header/header.component';
 
 @Component({
   selector: 'eventsList',
   standalone: true,
-  imports: [CommonModule, EventsListViewComponent, CreateEventButtonComponent, EventsMapComponent, EventFiltersComponent],
+  imports: [CommonModule, EventsListViewComponent, CreateEventButtonComponent, EventsMapComponent, EventFiltersComponent, HeaderComponent],
   templateUrl: "./eventsList.template.html",
   styleUrl: "./eventsList.style.less"
 })
@@ -20,14 +21,7 @@ export class EventsListComponent implements OnInit {
     view: 'list' | 'map' = 'list';
     filters: EventFilters = {};
 
-    constructor(
-        private apiService: ApiService,
-        private router: Router
-    ) {}
-
-    goHome(): void {
-        this.router.navigate(['/']);
-    }
+    constructor(private apiService: ApiService, private router: Router) {}
 
     ngOnInit(): void {
         this.fetchEvents();

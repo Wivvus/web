@@ -68,6 +68,14 @@ export class ApiService {
     return this.http.delete(`${this.apiUrl}/user`);
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/change-password`, { current_password: currentPassword, new_password: newPassword });
+  }
+
   getAttendees(id: number): Observable<{ attendees: { name: string, avatar_url: string }[], is_attending: boolean }> {
     return this.http.get<any>(`${this.apiUrl}/event/${id}/attendees`);
   }

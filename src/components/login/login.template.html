@@ -13,7 +13,7 @@
       <button class="btn-email" (click)="emailLogin = true">Continue with email</button>
     </ng-container>
 
-    <ng-container *ngIf="emailLogin">
+    <ng-container *ngIf="emailLogin && !forgotMode">
       <p *ngIf="loginError" class="login-message">{{ loginError }}</p>
       <form (ngSubmit)="submitEmailLogin()" class="email-form">
         <input type="email" [(ngModel)]="email" name="email" placeholder="Email" class="email-input" required>
@@ -22,6 +22,21 @@
           {{ loading ? 'Signing in...' : 'Sign in' }}
         </button>
       </form>
+      <p class="forgot-link"><span (click)="forgotMode = true">Forgot password?</span></p>
+    </ng-container>
+
+    <ng-container *ngIf="forgotMode">
+      <ng-container *ngIf="!forgotSent">
+        <p class="login-subtitle">Enter your email and we'll send you a reset link.</p>
+        <form (ngSubmit)="submitForgotPassword()" class="email-form">
+          <input type="email" [(ngModel)]="forgotEmail" name="forgotEmail" placeholder="Email" class="email-input" required>
+          <button type="submit" class="btn-email-submit" [disabled]="loading">
+            {{ loading ? 'Sending...' : 'Send reset email' }}
+          </button>
+        </form>
+        <p class="forgot-link"><span (click)="forgotMode = false">Back to sign in</span></p>
+      </ng-container>
+      <p *ngIf="forgotSent" class="login-message">Check your email for a reset link.</p>
     </ng-container>
 
     <p class="register-link">Don't have an account? <span (click)="goToRegister()">Sign up</span></p>

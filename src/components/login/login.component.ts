@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/authentication/auth.service';
+import { ApiService } from '../../services/api/api.service';
 
 @Component({
   selector: 'app-login',
@@ -20,9 +21,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
   password = '';
   loginError: string | null = null;
   loading = false;
+  forgotMode = false;
+  forgotEmail = '';
+  forgotSent = false;
+  forgotError: string | null = null;
 
   constructor(
     private authService: AuthService,
+    private apiService: ApiService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -60,5 +66,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   goToRegister(): void {
     this.router.navigate(['/register']);
+  }
+
+  submitForgotPassword(): void {
+    this.forgotError = null;
+    this.loading = true;
+    this.apiService.forgotPassword(this.forgotEmail).subscribe({
+      next: () => { this.forgotSent = true; this.loading = false; },
+      error: () => { this.forgotSent = true; this.loading = false; }
+    });
   }
 }

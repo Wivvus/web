@@ -17,6 +17,7 @@ export class SetPasswordComponent implements OnInit {
   confirm = '';
   error: string | null = null;
   loading = false;
+  isReset = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,6 +27,7 @@ export class SetPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.token = this.route.snapshot.queryParamMap.get('token') || '';
+    this.isReset = this.route.snapshot.queryParamMap.get('reset') === 'true';
     if (!this.token) {
       this.router.navigate(['/']);
     }

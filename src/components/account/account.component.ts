@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/authentication/auth.service';
 import { ApiService } from '../../services/api/api.service';
 import { MetricsService } from '../../services/metrics/metrics.service';
+import { Event as RunEvent } from '../../models/event.model';
 
 @Component({
   selector: 'app-account',
@@ -15,6 +16,9 @@ import { MetricsService } from '../../services/metrics/metrics.service';
   styleUrl: './account.style.less'
 })
 export class AccountComponent implements OnInit {
+  activeSection: 'settings' | 'events' = 'settings';
+
+  // Settings
   name: string = '';
   email: string = '';
   avatarUrl: string = '';
@@ -27,6 +31,10 @@ export class AccountComponent implements OnInit {
   passwordLoading = false;
   avatarLoading = false;
   avatarError: string | null = null;
+
+  // Events
+  userEvents: RunEvent[] = [];
+  eventsLoading = false;
 
   constructor(
     private authService: AuthService,
@@ -43,6 +51,47 @@ export class AccountComponent implements OnInit {
         this.email = profile.email;
         this.avatarUrl = this.authService.getUser()?.picture || '';
       }
+    });
+  }
+
+  switchSection(section: 'settings' | 'events'): void {
+    this.activeSection = section;
+    if (section === 'events' && this.userEvents.length === 0 && !this.eventsLoading) {
+      this.loadUserEvents();
+    }
+  }
+
+  private loadUserEvents(): void {
+    this.eventsLoading = true;
+    this.apiService.getUserEvents().subscribe({
+      next: events => {
+        this.userEvents = events;
+        this.eventsLoading = false;
+      },
+      error: () => { this.eventsLoading = false; }
+    });
+  }
+
+  isInFuture(event: RunEvent): boolean {
+    return new Date(event.start_time) > new Date();
+  }
+
+  viewEvent(event: RunEvent): void {
+    this.router.navigate(['/events', event.id]);
+  }
+
+  editEvent(event: RunEvent): void {
+    this.router.navigate(['/events', event.id, 'edit']);
+  }
+
+  deleteUserEvent(event: RunEvent): void {
+    if (!confirm(`Delete "${event.name}"? This cannot be undone.`)) return;
+    this.apiService.deleteEvent(event.id).subscribe({
+      next: () => {
+        this.userEvents = this.userEvents.filter(e => e.id !== event.id);
+        this.metrics.eventDeleted(event.id);
+      },
+      error: () => alert('Failed to delete event. Please try again.')
     });
   }
 
@@ -72,7 +121,7 @@ export class AccountComponent implements OnInit {
     });
   }
 
-  onAvatarSelected(event: Event): void {
+  onAvatarSelected(event: globalThis.Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;

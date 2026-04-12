@@ -108,6 +108,10 @@ export class ApiService {
     return this.http.get<UserProfile>(`${this.apiUrl}/user/profile`);
   }
 
+  getUserEvents(): Observable<Event[]> {
+    return this.http.get<Event[]>(`${this.apiUrl}/user/events`);
+  }
+
   /**
    * Health check (public endpoint - no auth required)
    */

@@ -1,61 +1,101 @@
 <div class="account-page">
   <app-header [showBack]="true" [onBack]="goBack.bind(this)"></app-header>
 
-  <div class="account-content">
-    <h1 class="page-title">Account Settings</h1>
+  <div class="account-layout">
 
-    <div class="settings-card avatar-card">
-      <div class="avatar-preview">
-        <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" class="avatar-img" referrerpolicy="no-referrer">
-        <div *ngIf="!avatarUrl" class="avatar-placeholder">{{ name.charAt(0).toUpperCase() }}</div>
-      </div>
-      <div class="avatar-actions">
-        <label class="btn-upload" [class.loading]="avatarLoading">
-          {{ avatarLoading ? 'Uploading...' : 'Change photo' }}
-          <input type="file" accept="image/*" (change)="onAvatarSelected($event)" [disabled]="avatarLoading" hidden>
-        </label>
-        <p *ngIf="avatarError" class="avatar-error">{{ avatarError }}</p>
-      </div>
-    </div>
+    <nav class="account-nav">
+      <button class="nav-item" [class.active]="activeSection === 'settings'" (click)="switchSection('settings')">Settings</button>
+      <button class="nav-item" [class.active]="activeSection === 'events'" (click)="switchSection('events')">Manage Events</button>
+    </nav>
 
-    <div class="settings-card">
-      <div class="setting-row">
-        <span class="setting-label">Name</span>
-        <span class="setting-value">{{ name }}</span>
-      </div>
-      <div class="setting-row">
-        <span class="setting-label">Email</span>
-        <span class="setting-value">{{ email }}</span>
-      </div>
-    </div>
+    <div class="account-main">
 
-    <div *ngIf="isLocalAuth" class="settings-card">
-      <h2 class="section-title">Change Password</h2>
-      <p *ngIf="passwordSuccess" class="success-msg">Password updated successfully.</p>
-      <form *ngIf="!passwordSuccess" (ngSubmit)="changePassword()" class="password-form">
-        <p *ngIf="passwordError" class="password-error">{{ passwordError }}</p>
-        <div class="form-group">
-          <label>Current password</label>
-          <input type="password" [(ngModel)]="currentPassword" name="currentPassword" class="form-input" required>
+      <!-- Settings -->
+      <ng-container *ngIf="activeSection === 'settings'">
+        <h1 class="page-title">Account Settings</h1>
+
+        <div class="settings-card avatar-card">
+          <div class="avatar-preview">
+            <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" class="avatar-img" referrerpolicy="no-referrer">
+            <div *ngIf="!avatarUrl" class="avatar-placeholder">{{ name.charAt(0).toUpperCase() }}</div>
+          </div>
+          <div class="avatar-actions">
+            <label class="btn-upload" [class.loading]="avatarLoading">
+              {{ avatarLoading ? 'Uploading...' : 'Change photo' }}
+              <input type="file" accept="image/*" (change)="onAvatarSelected($event)" [disabled]="avatarLoading" hidden>
+            </label>
+            <p *ngIf="avatarError" class="avatar-error">{{ avatarError }}</p>
+          </div>
         </div>
-        <div class="form-group">
-          <label>New password</label>
-          <input type="password" [(ngModel)]="newPassword" name="newPassword" class="form-input" placeholder="At least 8 characters" required>
-        </div>
-        <div class="form-group">
-          <label>Confirm new password</label>
-          <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" class="form-input" required>
-        </div>
-        <button type="submit" class="btn-change-password" [disabled]="passwordLoading">
-          {{ passwordLoading ? 'Saving...' : 'Update password' }}
-        </button>
-      </form>
-    </div>
 
-    <div class="settings-card danger-card">
-      <h2 class="danger-title">Danger Zone</h2>
-      <p class="danger-desc">Permanently delete your account and all your events. This cannot be undone.</p>
-      <button class="btn-delete" (click)="deleteAccount()">Delete Account</button>
+        <div class="settings-card">
+          <div class="setting-row">
+            <span class="setting-label">Name</span>
+            <span class="setting-value">{{ name }}</span>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">Email</span>
+            <span class="setting-value">{{ email }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="isLocalAuth" class="settings-card">
+          <h2 class="section-title">Change Password</h2>
+          <p *ngIf="passwordSuccess" class="success-msg">Password updated successfully.</p>
+          <form *ngIf="!passwordSuccess" (ngSubmit)="changePassword()" class="password-form">
+            <p *ngIf="passwordError" class="password-error">{{ passwordError }}</p>
+            <div class="form-group">
+              <label>Current password</label>
+              <input type="password" [(ngModel)]="currentPassword" name="currentPassword" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label>New password</label>
+              <input type="password" [(ngModel)]="newPassword" name="newPassword" class="form-input" placeholder="At least 8 characters" required>
+            </div>
+            <div class="form-group">
+              <label>Confirm new password</label>
+              <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" class="form-input" required>
+            </div>
+            <button type="submit" class="btn-change-password" [disabled]="passwordLoading">
+              {{ passwordLoading ? 'Saving...' : 'Update password' }}
+            </button>
+          </form>
+        </div>
+
+        <div class="settings-card danger-card">
+          <h2 class="danger-title">Danger Zone</h2>
+          <p class="danger-desc">Permanently delete your account and all your events. This cannot be undone.</p>
+          <button class="btn-delete" (click)="deleteAccount()">Delete Account</button>
+        </div>
+      </ng-container>
+
+      <!-- Manage Events -->
+      <ng-container *ngIf="activeSection === 'events'">
+        <h1 class="page-title">My Events</h1>
+
+        <div *ngIf="eventsLoading" class="events-loading">Loading...</div>
+
+        <div *ngIf="!eventsLoading && userEvents.length === 0" class="events-empty">
+          You haven't created any events yet.
+        </div>
+
+        <div class="events-list" *ngIf="!eventsLoading && userEvents.length > 0">
+          <div class="event-row" *ngFor="let event of userEvents" [class.past]="!isInFuture(event)">
+            <div class="event-row-info">
+              <span class="event-row-name">{{ event.name }}</span>
+              <span class="event-row-date">{{ event.start_time | date:'mediumDate' }}</span>
+            </div>
+            <div class="event-row-actions">
+              <ng-container *ngIf="isInFuture(event)">
+                <button class="btn-row btn-row-edit" (click)="editEvent(event)">Edit</button>
+                <button class="btn-row btn-row-delete" (click)="deleteUserEvent(event)">Delete</button>
+              </ng-container>
+              <button *ngIf="!isInFuture(event)" class="btn-row btn-row-view" (click)="viewEvent(event)">View</button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
     </div>
   </div>
 </div>

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy, ViewChild, ElementRef, NgZone } from '@angular/core';
 import * as L from 'leaflet';
+import { LocationService } from '../../services/location/location.service';
 
 const defaultIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -35,7 +36,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private marker?: L.Marker;
   private watchId?: number;
 
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone, private location: LocationService) {}
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -67,29 +68,27 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private centerOnUserLocation(): void {
-    if (!navigator.geolocation) return;
+    const cached = this.location.coords;
+    if (cached) this.map?.setView([cached.lat, cached.lng], 13);
 
-    this.watchId = navigator.geolocation.watchPosition(
-      (pos) => {
+    this.watchId = this.location.watch(
+      (coords, accuracy) => {
         this.ngZone.run(() => {
-          const { latitude, longitude, accuracy } = pos.coords;
           const zoom = accuracy <= 100 ? 15 : accuracy <= 1000 ? 13 : accuracy <= 5000 ? 11 : 9;
-          this.map?.setView([latitude, longitude], zoom);
-
+          this.map?.setView([coords.lat, coords.lng], zoom);
           if (accuracy <= 500 && this.watchId !== undefined) {
-            navigator.geolocation.clearWatch(this.watchId);
+            this.location.clearWatch(this.watchId);
             this.watchId = undefined;
           }
         });
       },
-      () => {},
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 30000 }
+      () => {}
     );
   }
 
   ngOnDestroy(): void {
     if (this.watchId !== undefined) {
-      navigator.geolocation.clearWatch(this.watchId);
+      this.location.clearWatch(this.watchId);
     }
     this.map?.remove();
   }

@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import { Event, EventFilters } from '../../../models/event.model';
 import { ApiService } from '../../../services/api/api.service';
 import { Router } from '@angular/router';
+import { LocationService } from '../../../services/location/location.service';
 
 const defaultIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -31,7 +32,7 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private maskCircleEl?: SVGCircleElement;
   private watchId?: number;
 
-  constructor(private ngZone: NgZone, private apiService: ApiService, private router: Router) {}
+  constructor(private ngZone: NgZone, private apiService: ApiService, private router: Router, private location: LocationService) {}
 
   ngOnChanges(): void {
     if (this.map) {
@@ -101,25 +102,25 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   private centerOnUserLocation(): void {
-    if (!navigator.geolocation) {
+    // Centre immediately on cached coords if available
+    const cached = this.location.coords;
+    if (cached) {
+      this.map?.setView([cached.lat, cached.lng], 13);
       this.fetchAndRender();
-      return;
     }
 
-    this.watchId = navigator.geolocation.watchPosition(
-      (pos) => {
+    this.watchId = this.location.watch(
+      (coords, accuracy) => {
         this.ngZone.run(() => {
-          const { latitude, longitude, accuracy } = pos.coords;
           const zoom = accuracy <= 100 ? 15 : accuracy <= 1000 ? 13 : accuracy <= 5000 ? 11 : 9;
-          this.map?.setView([latitude, longitude], zoom);
+          this.map?.setView([coords.lat, coords.lng], zoom);
           if (accuracy <= 500 && this.watchId !== undefined) {
-            navigator.geolocation.clearWatch(this.watchId);
+            this.location.clearWatch(this.watchId);
             this.watchId = undefined;
           }
         });
       },
-      () => { this.fetchAndRender(); },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+      () => { if (!cached) this.fetchAndRender(); }
     );
   }
 
@@ -203,7 +204,7 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.watchId !== undefined) {
-      navigator.geolocation.clearWatch(this.watchId);
+      this.location.clearWatch(this.watchId);
     }
     this.maskSvg?.remove();
     this.map?.remove();

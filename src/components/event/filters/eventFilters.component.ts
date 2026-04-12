@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EventFilters } from '../../../models/event.model';
+import { LocationService } from '../../../services/location/location.service';
 
 const LENGTH_MIN = 0;
 const LENGTH_MAX = 50;
@@ -37,11 +38,16 @@ export class EventFiltersComponent implements OnInit {
   private userLat?: number;
   private userLng?: number;
 
+  constructor(private location: LocationService) {}
+
   ngOnInit(): void {
     this.collapsed = window.innerWidth < 768;
-    navigator.geolocation?.getCurrentPosition(pos => {
-      this.userLat = pos.coords.latitude;
-      this.userLng = pos.coords.longitude;
+    // Use cached coords immediately, then update when fresh GPS arrives
+    const cached = this.location.coords;
+    if (cached) { this.userLat = cached.lat; this.userLng = cached.lng; }
+    this.location.request();
+    this.location.coords$.subscribe(coords => {
+      if (coords) { this.userLat = coords.lat; this.userLng = coords.lng; }
     });
   }
 

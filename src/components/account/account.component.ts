@@ -35,6 +35,9 @@ export class AccountComponent implements OnInit {
   // Events
   userEvents: RunEvent[] = [];
   eventsLoading = false;
+  expandedEventIds = new Set<number>();
+  eventAttendees: Record<number, { name: string; avatar_url: string }[]> = {};
+  attendeesLoading = new Set<number>();
 
   constructor(
     private authService: AuthService,
@@ -70,6 +73,32 @@ export class AccountComponent implements OnInit {
       },
       error: () => { this.eventsLoading = false; }
     });
+  }
+
+  toggleExpand(event: RunEvent): void {
+    if (this.expandedEventIds.has(event.id)) {
+      this.expandedEventIds.delete(event.id);
+    } else {
+      this.expandedEventIds.add(event.id);
+      if (!this.eventAttendees[event.id]) {
+        this.attendeesLoading.add(event.id);
+        this.apiService.getAttendees(event.id).subscribe({
+          next: res => {
+            this.eventAttendees[event.id] = res.attendees;
+            this.attendeesLoading.delete(event.id);
+          },
+          error: () => this.attendeesLoading.delete(event.id)
+        });
+      }
+    }
+  }
+
+  isExpanded(event: RunEvent): boolean {
+    return this.expandedEventIds.has(event.id);
+  }
+
+  isAttendeeLoading(event: RunEvent): boolean {
+    return this.attendeesLoading.has(event.id);
   }
 
   isInFuture(event: RunEvent): boolean {

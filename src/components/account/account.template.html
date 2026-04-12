@@ -80,18 +80,38 @@
         </div>
 
         <div class="events-list" *ngIf="!eventsLoading && userEvents.length > 0">
-          <div class="event-row" *ngFor="let event of userEvents" [class.past]="!isInFuture(event)">
-            <div class="event-row-info">
-              <span class="event-row-name">{{ event.name }}</span>
-              <span class="event-row-date">{{ event.start_time | date:'mediumDate' }}</span>
+          <div class="event-card" *ngFor="let event of userEvents" [class.past]="!isInFuture(event)">
+            <div class="event-row">
+              <div class="event-row-info">
+                <span class="event-row-name">{{ event.name }}</span>
+                <span class="event-row-date">{{ event.start_time | date:'mediumDate' }} &middot; {{ event.attendee_count }} {{ event.attendee_count === 1 ? 'attendee' : 'attendees' }}</span>
+              </div>
+              <div class="event-row-actions">
+                <ng-container *ngIf="isInFuture(event)">
+                  <button class="btn-row btn-row-view" (click)="viewEvent(event)">View</button>
+                  <button class="btn-row btn-row-edit" (click)="editEvent(event)">Edit</button>
+                  <button class="btn-row btn-row-delete" (click)="deleteUserEvent(event)">Delete</button>
+                </ng-container>
+                <ng-container *ngIf="!isInFuture(event)">
+                  <button class="btn-row btn-row-view" (click)="viewEvent(event)">View</button>
+                  <button class="btn-row btn-row-expand" (click)="toggleExpand(event)">
+                    {{ isExpanded(event) ? '▲' : '▼' }} Attendees
+                  </button>
+                </ng-container>
+              </div>
             </div>
-            <div class="event-row-actions">
-              <ng-container *ngIf="isInFuture(event)">
-                <button class="btn-row btn-row-view" (click)="viewEvent(event)">View</button>
-                <button class="btn-row btn-row-edit" (click)="editEvent(event)">Edit</button>
-                <button class="btn-row btn-row-delete" (click)="deleteUserEvent(event)">Delete</button>
-              </ng-container>
-              <button *ngIf="!isInFuture(event)" class="btn-row btn-row-view" (click)="viewEvent(event)">View</button>
+            <div class="event-attendees" *ngIf="isExpanded(event)">
+              <p class="attendees-loading" *ngIf="isAttendeeLoading(event)">Loading...</p>
+              <p class="attendees-none" *ngIf="!isAttendeeLoading(event) && (eventAttendees[event.id] || []).length === 0">No attendees.</p>
+              <div class="attendees-chips" *ngIf="!isAttendeeLoading(event) && (eventAttendees[event.id] || []).length > 0">
+                <div class="attendee-chip" *ngFor="let a of eventAttendees[event.id]">
+                  <div class="chip-avatar">
+                    <span class="chip-initials">{{ a.name.charAt(0) }}</span>
+                    <img *ngIf="a.avatar_url" [src]="a.avatar_url" [alt]="a.name" referrerpolicy="no-referrer" (error)="$any($event.target).style.display='none'">
+                  </div>
+                  <span class="chip-name">{{ a.name }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

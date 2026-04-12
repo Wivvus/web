@@ -26,6 +26,7 @@
     align-items: flex-start;
     padding: 1.5rem 2rem;
     gap: 1.5rem;
+    justify-content: center;
   }
 
   .filters-sidebar {
@@ -38,6 +39,7 @@
   .events-content {
     flex: 1;
     min-width: 0;
+    max-width: 800px;
   }
 }
 
@@ -75,6 +77,37 @@
 .map-view {
   position: relative;
   height: calc(100vh - var(--header-height) - 44px);
+}
+
+.create-cta {
+  margin-top: 0.5rem;
+  padding: 1.25rem;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1.5px dashed var(--border);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: var(--red);
+    background: var(--bg);
+  }
+}
+
+.cta-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 0.2rem;
+}
+
+.cta-sub {
+  font-size: 0.85rem;
+  color: var(--red);
+  font-weight: 600;
+  margin: 0;
 }
 
 .empty-state {

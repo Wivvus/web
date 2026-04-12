@@ -19,6 +19,10 @@
         } @empty {
           <p class="empty-state">No events yet. Be the first to create one!</p>
         }
+        <div class="create-cta" (click)="goToCreate()">
+          <p class="cta-text">Can't find the event you want?</p>
+          <p class="cta-sub">Why not make it now — it's free!</p>
+        </div>
       </div>
     </div>
   } @else {

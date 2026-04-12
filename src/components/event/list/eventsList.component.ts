@@ -21,7 +21,7 @@ export class EventsListComponent implements OnInit {
     view: 'list' | 'map' = 'list';
     filters: EventFilters = {};
 
-    constructor(private apiService: ApiService, private router: Router) {}
+  constructor(private apiService: ApiService, private router: Router) {}
 
     ngOnInit(): void {
         this.fetchEvents();
@@ -32,7 +32,11 @@ export class EventsListComponent implements OnInit {
         this.fetchEvents();
     }
 
-    private fetchEvents(): void {
+  goToCreate(): void {
+    this.router.navigate(['/events/create']);
+  }
+
+  private fetchEvents(): void {
         this.apiService.getEvents(undefined, this.filters).subscribe({
             next: (events) => { this.events = events; },
             error: () => {}

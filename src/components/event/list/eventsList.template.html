@@ -4,8 +4,8 @@
   </app-header>
 
   <div class="view-tabs">
-    <button class="tab-btn" [class.active]="view === 'list'" (click)="view = 'list'">List</button>
-    <button class="tab-btn" [class.active]="view === 'map'" (click)="view = 'map'">Map</button>
+    <button class="tab-btn" [class.active]="view === 'list'" (click)="switchView('list')">List</button>
+    <button class="tab-btn" [class.active]="view === 'map'" (click)="switchView('map')">Map</button>
   </div>
 
   @if (view === 'list') {

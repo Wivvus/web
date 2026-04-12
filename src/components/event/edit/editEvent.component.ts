@@ -6,6 +6,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { Event } from '../../../models/event.model';
 import { MapComponent, LatLng } from '../../map/map.component';
 import { HeaderComponent } from '../../header/header.component';
+import { MetricsService } from '../../../services/metrics/metrics.service';
 
 @Component({
   selector: 'edit-event',
@@ -24,7 +25,8 @@ export class EditEventComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private metrics: MetricsService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +75,10 @@ export class EditEventComponent implements OnInit {
     if (!this.event.start_time) { this.error = 'Start date and time are required.'; return; }
     this.loading = true;
     this.apiService.updateEvent(this.event.id, this.event).subscribe({
-      next: () => this.router.navigate(['/events', this.event!.id]),
+      next: () => {
+        this.metrics.eventEdited(this.event!.id);
+        this.router.navigate(['/events', this.event!.id]);
+      },
       error: (err) => {
         this.loading = false;
         if (err.status === 401) {

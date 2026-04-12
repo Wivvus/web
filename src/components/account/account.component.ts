@@ -5,6 +5,7 @@ import { HeaderComponent } from '../header/header.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/authentication/auth.service';
 import { ApiService } from '../../services/api/api.service';
+import { MetricsService } from '../../services/metrics/metrics.service';
 
 @Component({
   selector: 'app-account',
@@ -30,7 +31,8 @@ export class AccountComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private metrics: MetricsService
   ) {}
 
   ngOnInit(): void {
@@ -96,7 +98,10 @@ export class AccountComponent implements OnInit {
   deleteAccount(): void {
     if (!confirm('Are you sure you want to delete your account? This cannot be undone.')) return;
     this.apiService.deleteAccount().subscribe({
-      next: () => this.authService.logout(),
+      next: () => {
+        this.metrics.accountDeleted();
+        this.authService.logout();
+      },
       error: () => alert('Failed to delete account. Please try again.')
     });
   }

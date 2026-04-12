@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/authentication/auth.service';
 import { ApiService } from '../../services/api/api.service';
+import { MetricsService } from '../../services/metrics/metrics.service';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private apiService: ApiService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private metrics: MetricsService
   ) {}
 
   ngOnInit(): void {
@@ -71,6 +73,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   submitForgotPassword(): void {
     this.forgotError = null;
     this.loading = true;
+    this.metrics.passwordResetRequested();
     this.apiService.forgotPassword(this.forgotEmail).subscribe({
       next: () => { this.forgotSent = true; this.loading = false; },
       error: () => { this.forgotSent = true; this.loading = false; }

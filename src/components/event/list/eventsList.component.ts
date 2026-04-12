@@ -8,6 +8,7 @@ import { CreateEventButtonComponent } from '../createButton/createEventButton.co
 import { EventsMapComponent } from '../map/eventsMap.component';
 import { EventFiltersComponent } from '../filters/eventFilters.component';
 import { HeaderComponent } from '../../header/header.component';
+import { MetricsService } from '../../../services/metrics/metrics.service';
 
 @Component({
   selector: 'eventsList',
@@ -21,7 +22,7 @@ export class EventsListComponent implements OnInit {
     view: 'list' | 'map' = 'list';
     filters: EventFilters = {};
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(private apiService: ApiService, private router: Router, private metrics: MetricsService) {}
 
     ngOnInit(): void {
         this.fetchEvents();
@@ -29,8 +30,16 @@ export class EventsListComponent implements OnInit {
 
     onFiltersChange(filters: EventFilters): void {
         this.filters = filters;
+        this.metrics.filterUsed(filters);
         this.fetchEvents();
     }
+
+  switchView(view: 'list' | 'map'): void {
+    if (this.view !== view) {
+      this.view = view;
+      this.metrics.viewSwitched(view);
+    }
+  }
 
   goToCreate(): void {
     this.router.navigate(['/events/create']);

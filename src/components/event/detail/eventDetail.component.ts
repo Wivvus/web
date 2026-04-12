@@ -7,6 +7,7 @@ import { AuthService } from '../../../services/authentication/auth.service';
 import { Event } from '../../../models/event.model';
 import { MapComponent, LatLng } from '../../map/map.component';
 import { HeaderComponent } from '../../header/header.component';
+import { MetricsService } from '../../../services/metrics/metrics.service';
 
 @Component({
   selector: 'event-detail',
@@ -25,7 +26,8 @@ export class EventDetailComponent implements OnInit {
     private router: Router,
     private apiService: ApiService,
     private authService: AuthService,
-    private title: Title
+    private title: Title,
+    private metrics: MetricsService
   ) {}
 
   ngOnInit(): void {
@@ -36,6 +38,7 @@ export class EventDetailComponent implements OnInit {
       next: event => {
         this.event = event;
         this.title.setTitle(event.name);
+        this.metrics.eventViewed(event.id, event.name);
         if (this.isLoggedIn) {
           this.loadAttendees(id, autoAttend);
         }
@@ -85,14 +88,20 @@ export class EventDetailComponent implements OnInit {
   onAttend(): void {
     if (!this.event) return;
     this.apiService.attend(this.event.id).subscribe({
-      next: () => this.loadAttendees(this.event!.id)
+      next: () => {
+        this.metrics.eventAttended(this.event!.id);
+        this.loadAttendees(this.event!.id);
+      }
     });
   }
 
   onDrop(): void {
     if (!this.event) return;
     this.apiService.dropAttendance(this.event.id).subscribe({
-      next: () => this.loadAttendees(this.event!.id)
+      next: () => {
+        this.metrics.eventDropped(this.event!.id);
+        this.loadAttendees(this.event!.id);
+      }
     });
   }
 
@@ -104,7 +113,10 @@ export class EventDetailComponent implements OnInit {
     if (!this.event) return;
     if (!confirm(`Delete "${this.event.name}"? This cannot be undone.`)) return;
     this.apiService.deleteEvent(this.event.id).subscribe({
-      next: () => this.router.navigate(['/']),
+      next: () => {
+        this.metrics.eventDeleted(this.event!.id);
+        this.router.navigate(['/']);
+      },
       error: () => {}
     });
   }

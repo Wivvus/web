@@ -3,6 +3,7 @@ import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { MetricsService } from '../metrics/metrics.service';
 
 // Declare Google Identity Services global variable
 declare const google: any;
@@ -30,7 +31,7 @@ export class AuthService {
 
   private http: HttpClient;
 
-  constructor(private router: Router, httpBackend: HttpBackend, private ngZone: NgZone) {
+  constructor(private router: Router, httpBackend: HttpBackend, private ngZone: NgZone, private metrics: MetricsService) {
     this.http = new HttpClient(httpBackend);
 
     const user = this.getUser();
@@ -112,6 +113,8 @@ export class AuthService {
           userInfo.picture = res.user.avatar_url;
         }
         this.setUser(userInfo);
+        this.metrics.identify(String(res.user.id), { email: userInfo.email, name: userInfo.name });
+        this.metrics.loginCompleted('google');
         this.ngZone.run(() => {
           this.router.navigateByUrl(this.redirectAfterLogin);
           this.redirectAfterLogin = '/';
@@ -119,6 +122,7 @@ export class AuthService {
       },
       error: () => {
         this.setUser(userInfo);
+        this.metrics.loginCompleted('google');
         this.ngZone.run(() => {
           this.router.navigateByUrl(this.redirectAfterLogin);
           this.redirectAfterLogin = '/';
@@ -241,6 +245,8 @@ export class AuthService {
     this.setToken(token);
     this.setProvider('local');
     this.setUser(userInfo);
+    this.metrics.identify(String(user.id), { email: user.email, name: user.name });
+    this.metrics.loginCompleted('email');
   }
 
   public getProvider(): string {
@@ -252,6 +258,7 @@ export class AuthService {
   }
 
   public logout(returnUrl: string = '/'): void {
+    this.metrics.reset();
     sessionStorage.removeItem('id_token');
     sessionStorage.removeItem('user_info');
     sessionStorage.removeItem('auth_provider');

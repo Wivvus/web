@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, Router } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { AuthService } from '../services/authentication/auth.service';
+import { MetricsService } from '../services/metrics/metrics.service';
 
 @Component({
   selector: 'app-root',
@@ -10,10 +12,23 @@ import { AuthService } from '../services/authentication/auth.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.less'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'my-app';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private metrics: MetricsService
+  ) {}
+
+  ngOnInit(): void {
+    this.metrics.init();
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe(e => {
+      this.metrics.pageViewed((e as NavigationEnd).urlAfterRedirects);
+    });
+  }
 
   get isLoggedIn(): boolean {
     return this.authService.isAuthenticated();

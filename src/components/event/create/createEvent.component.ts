@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Event } from '../../../models/event.model';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { ApiService } from '../../../services/api/api.service';
 import { Router } from '@angular/router';
 import { MapComponent, LatLng } from '../../map/map.component';
 import { HeaderComponent } from '../../header/header.component';
+import { MetricsService } from '../../../services/metrics/metrics.service';
 
 @Component({
   selector: 'create-event',
@@ -14,17 +15,29 @@ import { HeaderComponent } from '../../header/header.component';
   templateUrl: "./createEvent.template.html",
   styleUrl: "./createEvent.style.less"
 })
-export class CreateEventComponent {
+export class CreateEventComponent implements OnDestroy {
     event: Event = new Event();
     startDate: string = "";
     startTime: string = "";
     error: string | null = null;
     loading = false;
+    private submitted = false;
 
     constructor(
         private apiService: ApiService,
-        private router: Router
+        private router: Router,
+        private metrics: MetricsService
     ) {}
+
+    ngOnDestroy(): void {
+        const filledName = !!this.event.name?.trim();
+        const filledLocation = !!(this.event.location?.lat && this.event.location?.long);
+        const filledTime = !!this.event.start_time;
+        const touched = filledName || filledLocation || filledTime;
+        if (!this.submitted && touched) {
+            this.metrics.createEventAbandoned({ filled_name: filledName, filled_location: filledLocation, filled_time: filledTime });
+        }
+    }
 
     goHome(): void {
         this.router.navigate(['/']);
@@ -51,7 +64,11 @@ export class CreateEventComponent {
         if (!this.event.start_time) { this.error = 'Start date and time are required.'; return; }
         this.loading = true;
         this.apiService.createEvent(this.event).subscribe({
-            next: () => this.router.navigate(['/']),
+            next: (created: any) => {
+                this.submitted = true;
+                this.metrics.eventCreated(created.id);
+                this.router.navigate(['/']);
+            },
             error: (err) => {
                 this.loading = false;
                 if (err.status === 401) {

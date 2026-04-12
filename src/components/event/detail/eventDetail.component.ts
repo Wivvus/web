@@ -104,9 +104,9 @@ export class EventDetailComponent implements OnInit {
       ? `${this.event.location.lat},${this.event.location.long}` : '';
     const params = new URLSearchParams({
       action: 'TEMPLATE',
-      text: this.event.name,
+      text: `wivvus.com - ${this.event.name}`,
       dates: `${fmt(start)}/${fmt(end)}`,
-      details: this.event.description || '',
+      details: `https://wivvus.com/events/${this.event.id}`,
       location
     });
     return `https://calendar.google.com/calendar/render?${params.toString()}`;
@@ -126,8 +126,8 @@ export class EventDetailComponent implements OnInit {
       'BEGIN:VEVENT',
       `DTSTART:${fmt(start)}`,
       `DTEND:${fmt(end)}`,
-      `SUMMARY:${this.event.name}`,
-      `DESCRIPTION:${(this.event.description || '').replace(/\n/g, '\\n')}`,
+      `SUMMARY:wivvus.com - ${this.event.name}`,
+      `DESCRIPTION:https://wivvus.com/events/${this.event.id}`,
       location ? `LOCATION:${location}` : '',
       'END:VEVENT',
       'END:VCALENDAR'

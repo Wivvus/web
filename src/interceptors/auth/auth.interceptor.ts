@@ -8,11 +8,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   // Only add Authorization header if token exists
   if (token) {
-    const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
-    if (authService.getProvider() === 'local') {
-      headers['X-Auth-Provider'] = 'local';
-    }
-    const clonedRequest = req.clone({ setHeaders: headers });
+    const clonedRequest = req.clone({
+      setHeaders: { Authorization: `Bearer ${token}`, 'X-Auth-Provider': 'local' }
+    });
     return next(clonedRequest);
   }
 

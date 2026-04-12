@@ -34,26 +34,6 @@ export class AuthService {
   constructor(private router: Router, httpBackend: HttpBackend, private ngZone: NgZone, private metrics: MetricsService) {
     this.http = new HttpClient(httpBackend);
 
-    const user = this.getUser();
-    const token = this.getToken();
-    if (user && !user.db_id && token) {
-      this.fetchDbId(token, user);
-    }
-  }
-
-  private fetchDbId(token: string, user: UserInfo): void {
-    this.http.get<{ user: { id: number, avatar_url: string } }>(`${environment.apiUrl}/user/data`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: res => {
-        user.db_id = res.user.id;
-        if (res.user.avatar_url) {
-          user.picture = res.user.avatar_url;
-        }
-        this.setUser(user);
-      },
-      error: () => {}
-    });
   }
 
   /**
@@ -91,45 +71,24 @@ export class AuthService {
    * Handle the credential response from Google
    */
   private handleCredentialResponse(response: any): void {
-    const idToken = response.credential;
-    
-    // Decode JWT to extract user info
-    const payload = this.decodeJWT(idToken);
-    const userInfo: UserInfo = {
-      email: payload.email,
-      name: payload.name,
-      picture: payload.picture,
-      sub: payload.sub
-    };
+    const googleIdToken = response.credential;
 
-    this.setToken(idToken);
-
-    this.http.get<{ user: { id: number, avatar_url: string } }>(`${environment.apiUrl}/user/data`, {
-      headers: { Authorization: `Bearer ${idToken}` }
-    }).subscribe({
+    this.http.post<{ token: string, user: { id: number, name: string, email: string, avatar_url: string } }>(
+      `${environment.apiUrl}/auth/google`, { id_token: googleIdToken }
+    ).subscribe({
       next: res => {
-        userInfo.db_id = res.user.id;
-        if (res.user.avatar_url) {
-          userInfo.picture = res.user.avatar_url;
-        }
-        this.setUser(userInfo);
-        this.metrics.identify(String(res.user.id), { email: userInfo.email, name: userInfo.name });
-        this.metrics.loginCompleted('google');
+        this.handleLocalAuthResponse(res.token, res.user);
+        // Override provider to 'google' so change-password form stays hidden
+        this.setProvider('google');
         this.ngZone.run(() => {
           this.router.navigateByUrl(this.redirectAfterLogin);
           this.redirectAfterLogin = '/';
         });
       },
       error: () => {
-        this.setUser(userInfo);
-        this.metrics.loginCompleted('google');
-        this.ngZone.run(() => {
-          this.router.navigateByUrl(this.redirectAfterLogin);
-          this.redirectAfterLogin = '/';
-        });
+        // Fallback: nothing, stay on login page
       }
     });
-
   }
 
   /**
@@ -156,7 +115,7 @@ export class AuthService {
    * Store token in session storage
    */
   private setToken(token: string): void {
-    sessionStorage.setItem('id_token', token);
+    localStorage.setItem('id_token', token);
     this.tokenSubject.next(token);
   }
 
@@ -164,7 +123,7 @@ export class AuthService {
    * Store user info in session storage
    */
   public setUser(user: UserInfo): void {
-    sessionStorage.setItem('user_info', JSON.stringify(user));
+    localStorage.setItem('user_info', JSON.stringify(user));
     this.userSubject.next(user);
   }
 
@@ -172,14 +131,14 @@ export class AuthService {
    * Get stored token
    */
   private getStoredToken(): string | null {
-    return sessionStorage.getItem('id_token');
+    return localStorage.getItem('id_token');
   }
 
   /**
    * Get stored user info
    */
   private getStoredUser(): UserInfo | null {
-    const userStr = sessionStorage.getItem('user_info');
+    const userStr = localStorage.getItem('user_info');
     return userStr ? JSON.parse(userStr) : null;
   }
 
@@ -250,18 +209,18 @@ export class AuthService {
   }
 
   public getProvider(): string {
-    return sessionStorage.getItem('auth_provider') || 'google';
+    return localStorage.getItem('auth_provider') || 'google';
   }
 
   private setProvider(provider: string): void {
-    sessionStorage.setItem('auth_provider', provider);
+    localStorage.setItem('auth_provider', provider);
   }
 
   public logout(returnUrl: string = '/'): void {
     this.metrics.reset();
-    sessionStorage.removeItem('id_token');
-    sessionStorage.removeItem('user_info');
-    sessionStorage.removeItem('auth_provider');
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('user_info');
+    localStorage.removeItem('auth_provider');
     this.tokenSubject.next(null);
     this.userSubject.next(null);
 

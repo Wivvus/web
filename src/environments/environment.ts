@@ -3,5 +3,5 @@ export const environment = {
   googleClientId: '75848640307-4r2a0b3ifn804tfiamm8ccsnvd3qu3of.apps.googleusercontent.com',
   apiUrl: 'https://api.wivvus.com',
   posthogKey: 'phc_vVksfmPZRSeioYMrgEUjgkvzXZ5C8EEMuxqBYkGi9bZK',
-  posthogHost: 'https://app.posthog.com'
+  posthogHost: 'https://eu.posthog.com'
 };

@@ -87,17 +87,15 @@
                 <span class="event-row-date">{{ event.start_time | date:'mediumDate' }} &middot; {{ event.attendee_count }} {{ event.attendee_count === 1 ? 'attendee' : 'attendees' }}</span>
               </div>
               <div class="event-row-actions">
+                <button class="btn-row btn-row-expand" (click)="toggleExpand(event)">
+                  {{ isExpanded(event) ? '▲' : '▼' }} Attendees
+                </button>
                 <ng-container *ngIf="isInFuture(event)">
                   <button class="btn-row btn-row-view" (click)="viewEvent(event)">View</button>
                   <button class="btn-row btn-row-edit" (click)="editEvent(event)">Edit</button>
                   <button class="btn-row btn-row-delete" (click)="deleteUserEvent(event)">Delete</button>
                 </ng-container>
-                <ng-container *ngIf="!isInFuture(event)">
-                  <button class="btn-row btn-row-view" (click)="viewEvent(event)">View</button>
-                  <button class="btn-row btn-row-expand" (click)="toggleExpand(event)">
-                    {{ isExpanded(event) ? '▲' : '▼' }} Attendees
-                  </button>
-                </ng-container>
+                <button *ngIf="!isInFuture(event)" class="btn-row btn-row-view" (click)="viewEvent(event)">View</button>
               </div>
             </div>
             <div class="event-attendees" *ngIf="isExpanded(event)">

@@ -87,6 +87,7 @@
             </div>
             <div class="event-row-actions">
               <ng-container *ngIf="isInFuture(event)">
+                <button class="btn-row btn-row-view" (click)="viewEvent(event)">View</button>
                 <button class="btn-row btn-row-edit" (click)="editEvent(event)">Edit</button>
                 <button class="btn-row btn-row-delete" (click)="deleteUserEvent(event)">Delete</button>
               </ng-container>

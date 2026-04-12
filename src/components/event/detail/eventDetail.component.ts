@@ -95,6 +95,52 @@ export class EventDetailComponent implements OnInit {
     });
   }
 
+  get googleCalendarUrl(): string | null {
+    if (!this.event?.start_time) return null;
+    const start = new Date(this.event.start_time);
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const location = this.event.location?.lat && this.event.location?.long
+      ? `${this.event.location.lat},${this.event.location.long}` : '';
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: this.event.name,
+      dates: `${fmt(start)}/${fmt(end)}`,
+      details: this.event.description || '',
+      location
+    });
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  }
+
+  downloadIcs(): void {
+    if (!this.event?.start_time) return;
+    const start = new Date(this.event.start_time);
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const location = this.event.location?.lat && this.event.location?.long
+      ? `${this.event.location.lat},${this.event.location.long}` : '';
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Wivvus//Wivvus//EN',
+      'BEGIN:VEVENT',
+      `DTSTART:${fmt(start)}`,
+      `DTEND:${fmt(end)}`,
+      `SUMMARY:${this.event.name}`,
+      `DESCRIPTION:${(this.event.description || '').replace(/\n/g, '\\n')}`,
+      location ? `LOCATION:${location}` : '',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].filter(Boolean);
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${this.event.name.replace(/[^a-z0-9]/gi, '_')}.ics`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   onDrop(): void {
     if (!this.event) return;
     this.apiService.dropAttendance(this.event.id).subscribe({

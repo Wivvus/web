@@ -40,6 +40,14 @@
       </ng-template>
     </div>
 
+    <div class="calendar-section" *ngIf="isAttending && event.start_time">
+      <p class="calendar-label">Add to your calendar</p>
+      <div class="calendar-buttons">
+        <a class="btn-calendar btn-gcal" [href]="googleCalendarUrl" target="_blank" rel="noopener">Google Calendar</a>
+        <button class="btn-calendar btn-ics" (click)="downloadIcs()">Apple / Outlook (.ics)</button>
+      </div>
+    </div>
+
     <div class="attendees-section">
       <h3 class="attendees-title">
         {{ event.attendee_count }} {{ event.attendee_count === 1 ? 'runner' : 'runners' }} attending

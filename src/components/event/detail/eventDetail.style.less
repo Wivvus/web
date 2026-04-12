@@ -139,6 +139,56 @@
   &:hover { background: #ccc; }
 }
 
+.calendar-section {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.calendar-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.calendar-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-calendar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  &:hover { opacity: 0.85; }
+}
+
+.btn-gcal {
+  background: var(--yellow);
+  color: var(--black);
+}
+
+.btn-ics {
+  background: var(--border);
+  color: var(--text);
+}
+
 .attendees-section {
   background: var(--white);
   border-radius: var(--radius-md);

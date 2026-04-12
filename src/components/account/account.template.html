@@ -4,6 +4,20 @@
   <div class="account-content">
     <h1 class="page-title">Account Settings</h1>
 
+    <div class="settings-card avatar-card">
+      <div class="avatar-preview">
+        <img *ngIf="avatarUrl" [src]="avatarUrl" alt="Avatar" class="avatar-img" referrerpolicy="no-referrer">
+        <div *ngIf="!avatarUrl" class="avatar-placeholder">{{ name.charAt(0).toUpperCase() }}</div>
+      </div>
+      <div class="avatar-actions">
+        <label class="btn-upload" [class.loading]="avatarLoading">
+          {{ avatarLoading ? 'Uploading...' : 'Change photo' }}
+          <input type="file" accept="image/*" (change)="onAvatarSelected($event)" [disabled]="avatarLoading" hidden>
+        </label>
+        <p *ngIf="avatarError" class="avatar-error">{{ avatarError }}</p>
+      </div>
+    </div>
+
     <div class="settings-card">
       <div class="setting-row">
         <span class="setting-label">Name</span>

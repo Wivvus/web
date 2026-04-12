@@ -16,6 +16,7 @@ import { ApiService } from '../../services/api/api.service';
 export class AccountComponent implements OnInit {
   name: string = '';
   email: string = '';
+  avatarUrl: string = '';
   isLocalAuth = false;
   currentPassword = '';
   newPassword = '';
@@ -23,6 +24,8 @@ export class AccountComponent implements OnInit {
   passwordError: string | null = null;
   passwordSuccess = false;
   passwordLoading = false;
+  avatarLoading = false;
+  avatarError: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -36,6 +39,7 @@ export class AccountComponent implements OnInit {
       next: profile => {
         this.name = profile.name;
         this.email = profile.email;
+        this.avatarUrl = this.authService.getUser()?.picture || '';
       }
     });
   }
@@ -62,6 +66,29 @@ export class AccountComponent implements OnInit {
       error: (err) => {
         this.passwordError = err.error?.error || 'Failed to update password';
         this.passwordLoading = false;
+      }
+    });
+  }
+
+  onAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.avatarError = null;
+    this.avatarLoading = true;
+    this.apiService.uploadAvatar(file).subscribe({
+      next: res => {
+        this.avatarUrl = res.avatar_url;
+        const user = this.authService.getUser();
+        if (user) {
+          user.picture = res.avatar_url;
+          this.authService.setUser(user);
+        }
+        this.avatarLoading = false;
+      },
+      error: (err) => {
+        this.avatarError = err.error?.error || 'Failed to upload avatar';
+        this.avatarLoading = false;
       }
     });
   }

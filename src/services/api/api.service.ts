@@ -76,6 +76,12 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/auth/change-password`, { current_password: currentPassword, new_password: newPassword });
   }
 
+  uploadAvatar(file: File): Observable<{ avatar_url: string }> {
+    const form = new FormData();
+    form.append('avatar', file);
+    return this.http.post<{ avatar_url: string }>(`${this.apiUrl}/user/avatar`, form);
+  }
+
   getAttendees(id: number): Observable<{ attendees: { name: string, avatar_url: string }[], is_attending: boolean }> {
     return this.http.get<any>(`${this.apiUrl}/event/${id}/attendees`);
   }

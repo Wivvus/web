@@ -41,11 +41,14 @@ export class AuthService {
   }
 
   private fetchDbId(token: string, user: UserInfo): void {
-    this.http.get<{ user: { id: number } }>(`${environment.apiUrl}/user/data`, {
+    this.http.get<{ user: { id: number, avatar_url: string } }>(`${environment.apiUrl}/user/data`, {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
       next: res => {
         user.db_id = res.user.id;
+        if (res.user.avatar_url) {
+          user.picture = res.user.avatar_url;
+        }
         this.setUser(user);
       },
       error: () => {}
@@ -100,11 +103,14 @@ export class AuthService {
 
     this.setToken(idToken);
 
-    this.http.get<{ user: { id: number } }>(`${environment.apiUrl}/user/data`, {
+    this.http.get<{ user: { id: number, avatar_url: string } }>(`${environment.apiUrl}/user/data`, {
       headers: { Authorization: `Bearer ${idToken}` }
     }).subscribe({
       next: res => {
         userInfo.db_id = res.user.id;
+        if (res.user.avatar_url) {
+          userInfo.picture = res.user.avatar_url;
+        }
         this.setUser(userInfo);
         this.ngZone.run(() => {
           this.router.navigateByUrl(this.redirectAfterLogin);
@@ -153,7 +159,7 @@ export class AuthService {
   /**
    * Store user info in session storage
    */
-  private setUser(user: UserInfo): void {
+  public setUser(user: UserInfo): void {
     sessionStorage.setItem('user_info', JSON.stringify(user));
     this.userSubject.next(user);
   }

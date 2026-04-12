@@ -8,6 +8,7 @@ import { CreateEventComponent } from '../components/event/create/createEvent.com
 import { EventDetailComponent } from '../components/event/detail/eventDetail.component';
 import { EditEventComponent } from '../components/event/edit/editEvent.component';
 import { AccountComponent } from '../components/account/account.component';
+import { NotFoundComponent } from '../components/not-found/notFound.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -48,6 +49,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: '/'
+    component: NotFoundComponent,
+    title: 'Page not found'
   }
 ];

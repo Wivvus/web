@@ -1,0 +1,125 @@
+.notfound-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--red);
+  padding: 1.5rem;
+  gap: 2rem;
+}
+
+// The bib
+.bib {
+  position: relative;
+  background: var(--white);
+  border: 6px solid var(--black);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  padding: 1.5rem 2rem 2rem;
+  text-align: center;
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.25);
+
+  // Pin holes in corners
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: var(--red);
+    border: 3px solid var(--black);
+    border-radius: 50%;
+    top: 12px;
+  }
+  &::before { left: 12px; }
+  &::after  { right: 12px; }
+}
+
+.bib-bottom-pins {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px;
+  pointer-events: none;
+
+  span {
+    display: block;
+    width: 14px;
+    height: 14px;
+    background: var(--red);
+    border: 3px solid var(--black);
+    border-radius: 50%;
+  }
+}
+
+.bib-event {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--red);
+  margin: 0 -2rem 1.25rem;
+  padding: 0.35rem 0;
+}
+
+.bib-number {
+  font-size: 7rem;
+  font-weight: 900;
+  color: var(--black);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.bib-name {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--black);
+  border-top: 3px solid var(--black);
+  padding-top: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+.bib-category {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+// Message and CTA below the bib
+.notfound-message {
+  color: var(--white);
+  font-size: 0.95rem;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.btn-home {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: var(--yellow);
+  color: var(--black);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  letter-spacing: 0.02em;
+
+  &:hover { opacity: 0.85; }
+}

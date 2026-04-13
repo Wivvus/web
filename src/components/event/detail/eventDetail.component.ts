@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { AuthService } from '../../../services/authentication/auth.service';
-import { Event, RatingInfo } from '../../../models/event.model';
+import { Event, RatingInfo, RatingInfoWithEvent } from '../../../models/event.model';
 import { MapComponent, LatLng } from '../../map/map.component';
 import { HeaderComponent } from '../../header/header.component';
 import { MetricsService } from '../../../services/metrics/metrics.service';
@@ -27,6 +27,10 @@ export class EventDetailComponent implements OnInit {
   myComment: string = '';
   ratingSubmitted: boolean = false;
   ratingError: string | null = null;
+  creatorRatings: RatingInfoWithEvent[] = [];
+  creatorRatingsAverage: number | null = null;
+  showCreatorRatings: boolean = false;
+  creatorRatingsLoaded: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,6 +57,19 @@ export class EventDetailComponent implements OnInit {
       },
       error: () => this.router.navigate(['/'])
     });
+  }
+
+  toggleCreatorRatings(): void {
+    this.showCreatorRatings = !this.showCreatorRatings;
+    if (this.showCreatorRatings && !this.creatorRatingsLoaded && this.event) {
+      this.apiService.getCreatorRatings(this.event.creator_id).subscribe({
+        next: res => {
+          this.creatorRatings = res.ratings;
+          this.creatorRatingsAverage = res.average;
+          this.creatorRatingsLoaded = true;
+        }
+      });
+    }
   }
 
   private loadRatings(id: number): void {

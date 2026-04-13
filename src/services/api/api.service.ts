@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Event, EventFilters, RatingInfo } from '../../models/event.model';
+import { Event, EventFilters, RatingInfo, RatingInfoWithEvent } from '../../models/event.model';
 export interface UserData {
   message: string;
   user: {
@@ -81,6 +81,10 @@ export class ApiService {
 
   getRatings(id: number): Observable<{ ratings: RatingInfo[], average: number | null }> {
     return this.http.get<any>(`${this.apiUrl}/event/${id}/ratings`);
+  }
+
+  getCreatorRatings(userId: number): Observable<{ ratings: RatingInfoWithEvent[], average: number | null }> {
+    return this.http.get<any>(`${this.apiUrl}/user/${userId}/ratings`);
   }
 
   rateEvent(id: number, score: number, comment: string): Observable<any> {

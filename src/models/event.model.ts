@@ -22,6 +22,8 @@ export class Event {
     public all_paces: boolean = false,
     public location: Location = { lat: null, long: null },
     public creator_id: number = 0,
+    public creator_name: string = "",
+    public creator_avatar_url: string = "",
     public attendee_count: number = 0,
     public creator_rating: number | null = null,
   ) { }
@@ -32,4 +34,9 @@ export interface RatingInfo {
   avatar_url: string;
   score: number;
   comment?: string;
+}
+
+export interface RatingInfoWithEvent extends RatingInfo {
+  event_name: string;
+  event_id: number;
 }

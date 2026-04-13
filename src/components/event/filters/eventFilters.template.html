@@ -39,15 +39,6 @@
       <input class="filter-input" type="date" [(ngModel)]="dateFrom" (change)="apply()">
     </div>
 
-    <div class="filter-group">
-      <div class="filter-label-row">
-        <label class="filter-label">Distance from me (km)</label>
-        <span class="range-values">{{ maxRadius === 0 ? 'Any' : maxRadius + ' km' }}</span>
-      </div>
-      <div class="single-range" [style.background]="trackFill(0, maxRadius, 0, radiusMax)">
-        <input type="range" [(ngModel)]="maxRadius" min="0" [max]="radiusMax" step="1" (input)="apply()">
-      </div>
-    </div>
 
-  </div>
+</div>
 </div>

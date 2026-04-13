@@ -3,9 +3,6 @@ export interface EventFilters {
   maxPace?: number;
   minLength?: number;
   maxLength?: number;
-  maxRadius?: number;
-  userLat?: number;
-  userLng?: number;
   dateFrom?: string;
 }
 

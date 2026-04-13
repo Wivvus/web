@@ -44,9 +44,6 @@ export class ApiService {
     if (filters?.maxPace) parts.push(`max_pace=${filters.maxPace}`);
     if (filters?.minLength) parts.push(`min_length=${filters.minLength}`);
     if (filters?.maxLength) parts.push(`max_length=${filters.maxLength}`);
-    if (filters?.maxRadius && filters?.userLat && filters?.userLng) {
-      parts.push(`max_radius=${filters.maxRadius}&user_lat=${filters.userLat}&user_lng=${filters.userLng}`);
-    }
     if (filters?.dateFrom) parts.push(`date_from=${filters.dateFrom}`);
     const qs = parts.length ? `?${parts.join('&')}` : '';
     return this.http.get<Event[]>(`${this.apiUrl}/events${qs}`);

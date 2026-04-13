@@ -2,13 +2,11 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EventFilters } from '../../../models/event.model';
-import { LocationService } from '../../../services/location/location.service';
 
 const LENGTH_MIN = 0;
 const LENGTH_MAX = 50;
 const PACE_MIN = 3;
 const PACE_MAX = 15;
-const RADIUS_MAX = 50;
 
 @Component({
   selector: 'event-filters',
@@ -25,36 +23,22 @@ export class EventFiltersComponent implements OnInit {
   readonly lengthMax = LENGTH_MAX;
   readonly paceMin = PACE_MIN;
   readonly paceMax = PACE_MAX;
-  readonly radiusMax = RADIUS_MAX;
 
   lengthLow = LENGTH_MIN;
   lengthHigh = LENGTH_MAX;
   paceLow = PACE_MIN;
   paceHigh = PACE_MAX;
-  maxRadius = 0;
   dateFrom: string = '';
   collapsed = false;
 
-  private userLat?: number;
-  private userLng?: number;
-
-  constructor(private location: LocationService) {}
-
   ngOnInit(): void {
     this.collapsed = window.innerWidth < 768;
-    // Use cached coords immediately, then update when fresh GPS arrives
-    const cached = this.location.coords;
-    if (cached) { this.userLat = cached.lat; this.userLng = cached.lng; }
-    this.location.request();
-    this.location.coords$.subscribe(coords => {
-      if (coords) { this.userLat = coords.lat; this.userLng = coords.lng; }
-    });
   }
 
   get hasActiveFilters(): boolean {
     return this.lengthLow > LENGTH_MIN || this.lengthHigh < LENGTH_MAX
       || this.paceLow > PACE_MIN || this.paceHigh < PACE_MAX
-      || this.maxRadius > 0 || !!this.dateFrom;
+      || !!this.dateFrom;
   }
 
   trackFill(low: number, high: number, min: number, max: number): string {
@@ -89,7 +73,6 @@ export class EventFiltersComponent implements OnInit {
     if (this.lengthHigh < LENGTH_MAX) f.maxLength = this.lengthHigh;
     if (this.paceLow > PACE_MIN) f.minPace = this.paceLow;
     if (this.paceHigh < PACE_MAX) f.maxPace = this.paceHigh;
-    if (this.maxRadius > 0) { f.maxRadius = this.maxRadius; f.userLat = this.userLat; f.userLng = this.userLng; }
     if (this.dateFrom) f.dateFrom = this.dateFrom;
     this.filtersChange.emit(f);
   }
@@ -99,7 +82,6 @@ export class EventFiltersComponent implements OnInit {
     this.lengthHigh = LENGTH_MAX;
     this.paceLow = PACE_MIN;
     this.paceHigh = PACE_MAX;
-    this.maxRadius = 0;
     this.dateFrom = '';
     this.filtersChange.emit({});
   }

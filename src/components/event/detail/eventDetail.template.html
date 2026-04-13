@@ -48,6 +48,35 @@
       </div>
     </div>
 
+    <!-- Rating form: past events, attendees only, not owner -->
+    <div class="rating-section" *ngIf="canRate">
+      <h3 class="section-heading">Rate this event</h3>
+      <p *ngIf="ratingSubmitted" class="rating-success">Thanks for your rating!</p>
+      <ng-container *ngIf="!ratingSubmitted">
+        <p *ngIf="ratingError" class="rating-error">{{ ratingError }}</p>
+        <div class="star-picker">
+          <button *ngFor="let s of [1,2,3,4,5]" class="star" [class.active]="myRating >= s" (click)="setRating(s)">★</button>
+        </div>
+        <textarea class="rating-comment" [(ngModel)]="myComment" placeholder="Add a comment (optional)" rows="3"></textarea>
+        <button class="btn-submit-rating" [disabled]="myRating === 0" (click)="submitRating()">Submit rating</button>
+      </ng-container>
+    </div>
+
+    <!-- Ratings list -->
+    <div class="ratings-section" *ngIf="ratings.length > 0">
+      <h3 class="section-heading">
+        Ratings
+        <span class="ratings-average" *ngIf="ratingsAverage">{{ ratingsAverage | number:'1.1-1' }} ★</span>
+      </h3>
+      <div class="rating-item" *ngFor="let r of ratings">
+        <div class="rating-item-header">
+          <span class="rating-user">{{ r.user_name }}</span>
+          <span class="rating-stars">{{ r.score }}★</span>
+        </div>
+        <p class="rating-comment-text" *ngIf="r.comment">{{ r.comment }}</p>
+      </div>
+    </div>
+
     <div class="attendees-section">
       <h3 class="attendees-title">
         {{ event.attendee_count }} {{ event.attendee_count === 1 ? 'runner' : 'runners' }} attending

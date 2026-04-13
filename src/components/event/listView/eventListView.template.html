@@ -4,9 +4,12 @@
     <span *ngIf="formattedDate" class="event-date">{{ formattedDate }} · {{ formattedTime }}</span>
   </div>
   <p *ngIf="event.description" class="event-desc">{{ shortDescription }}</p>
-  <div class="event-meta" *ngIf="event.distance_km || event.pace_min_km || event.all_paces">
-    <span *ngIf="event.distance_km" class="meta-chip">{{ event.distance_km }} km</span>
-    <span *ngIf="event.all_paces" class="meta-chip">All paces welcome</span>
-    <span *ngIf="!event.all_paces && event.pace_min_km" class="meta-chip">{{ event.pace_min_km }} min/km</span>
+  <div class="event-footer">
+    <div class="event-meta" *ngIf="event.distance_km || event.pace_min_km || event.all_paces">
+      <span *ngIf="event.distance_km" class="meta-chip">{{ event.distance_km }} km</span>
+      <span *ngIf="event.all_paces" class="meta-chip">All paces welcome</span>
+      <span *ngIf="!event.all_paces && event.pace_min_km" class="meta-chip">{{ event.pace_min_km }} min/km</span>
+    </div>
+    <span *ngIf="event.creator_rating != null" class="creator-rating">{{ event.creator_rating | number:'1.1-1' }} ★</span>
   </div>
 </div>

@@ -189,6 +189,151 @@
   color: var(--text);
 }
 
+.section-heading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--black);
+  margin: 0 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ratings-average {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.rating-section {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.star-picker {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.star {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  cursor: pointer;
+  color: var(--border);
+  padding: 0;
+  line-height: 1;
+  transition: color 0.1s;
+
+  &.active {
+    color: var(--yellow);
+  }
+
+  &:hover {
+    color: var(--yellow);
+  }
+}
+
+.rating-comment {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  color: var(--text);
+  resize: vertical;
+  box-sizing: border-box;
+  margin-bottom: 0.75rem;
+
+  &:focus {
+    outline: none;
+    border-color: var(--red);
+  }
+}
+
+.btn-submit-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.5rem 1.25rem;
+  background: var(--red);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) { background: var(--red-dark); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.rating-success {
+  color: var(--green, #27ae60);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.rating-error {
+  color: var(--red);
+  font-size: 0.875rem;
+  margin: 0 0 0.5rem;
+}
+
+.ratings-section {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.rating-item {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
+.rating-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.rating-user {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--black);
+}
+
+.rating-stars {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--yellow);
+}
+
+.rating-comment-text {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
 .attendees-section {
   background: var(--white);
   border-radius: var(--radius-md);

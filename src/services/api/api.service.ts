@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-import { Event, EventFilters } from '../../models/event.model';
+import { Event, EventFilters, RatingInfo } from '../../models/event.model';
 export interface UserData {
   message: string;
   user: {
@@ -77,6 +77,14 @@ export class ApiService {
     const form = new FormData();
     form.append('avatar', file);
     return this.http.post<{ avatar_url: string }>(`${this.apiUrl}/user/avatar`, form);
+  }
+
+  getRatings(id: number): Observable<{ ratings: RatingInfo[], average: number | null }> {
+    return this.http.get<any>(`${this.apiUrl}/event/${id}/ratings`);
+  }
+
+  rateEvent(id: number, score: number, comment: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/event/${id}/rate`, { score, comment });
   }
 
   getAttendees(id: number): Observable<{ attendees: { name: string, avatar_url: string }[], is_attending: boolean }> {

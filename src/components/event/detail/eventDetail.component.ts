@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { AuthService } from '../../../services/authentication/auth.service';
-import { Event } from '../../../models/event.model';
+import { Event, RatingInfo } from '../../../models/event.model';
 import { MapComponent, LatLng } from '../../map/map.component';
 import { HeaderComponent } from '../../header/header.component';
 import { MetricsService } from '../../../services/metrics/metrics.service';
@@ -12,7 +13,7 @@ import { MetricsService } from '../../../services/metrics/metrics.service';
 @Component({
   selector: 'event-detail',
   standalone: true,
-  imports: [CommonModule, MapComponent, HeaderComponent],
+  imports: [CommonModule, FormsModule, MapComponent, HeaderComponent],
   templateUrl: './eventDetail.template.html',
   styleUrl: './eventDetail.style.less'
 })
@@ -20,6 +21,12 @@ export class EventDetailComponent implements OnInit {
   event?: Event;
   attendees: { name: string, avatar_url: string }[] = [];
   isAttending: boolean = false;
+  ratings: RatingInfo[] = [];
+  ratingsAverage: number | null = null;
+  myRating: number = 0;
+  myComment: string = '';
+  ratingSubmitted: boolean = false;
+  ratingError: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,11 +46,45 @@ export class EventDetailComponent implements OnInit {
         this.event = event;
         this.title.setTitle(event.name);
         this.metrics.eventViewed(event.id, event.name);
+        this.loadRatings(id);
         if (this.isLoggedIn) {
           this.loadAttendees(id, autoAttend);
         }
       },
       error: () => this.router.navigate(['/'])
+    });
+  }
+
+  private loadRatings(id: number): void {
+    this.apiService.getRatings(id).subscribe({
+      next: res => {
+        this.ratings = res.ratings;
+        this.ratingsAverage = res.average;
+      }
+    });
+  }
+
+  get isInPast(): boolean {
+    return !!this.event && new Date(this.event.start_time) < new Date();
+  }
+
+  get canRate(): boolean {
+    return this.isInPast && this.isAttending && !this.isOwner;
+  }
+
+  setRating(score: number): void {
+    this.myRating = score;
+  }
+
+  submitRating(): void {
+    if (!this.event || this.myRating === 0) return;
+    this.ratingError = null;
+    this.apiService.rateEvent(this.event.id, this.myRating, this.myComment).subscribe({
+      next: () => {
+        this.ratingSubmitted = true;
+        this.loadRatings(this.event!.id);
+      },
+      error: err => { this.ratingError = err.error?.error || 'Failed to submit rating'; }
     });
   }
 

@@ -23,5 +23,13 @@ export class Event {
     public location: Location = { lat: null, long: null },
     public creator_id: number = 0,
     public attendee_count: number = 0,
+    public creator_rating: number | null = null,
   ) { }
+}
+
+export interface RatingInfo {
+  user_name: string;
+  avatar_url: string;
+  score: number;
+  comment?: string;
 }

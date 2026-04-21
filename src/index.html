@@ -28,14 +28,31 @@
       var url = location.href;
 
       if (/android/i.test(navigator.userAgent)) {
-        // intent:// opens directly in Chrome (or fallback to system browser)
+        // Guard against a redirect loop: if the intent:// fails Telegram loads the
+        // fallback URL back inside itself. sessionStorage persists across that reload
+        // but NOT in the new Chrome tab, so we can detect the loop case and stop.
+        if (sessionStorage.getItem('tg-rdr')) return;
+        sessionStorage.setItem('tg-rdr', '1');
+
         var intentUrl = 'intent://' + url.replace(/^https?:\/\//, '') +
           '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' +
           encodeURIComponent(url) + ';end';
         window.location.replace(intentUrl);
       } else {
-        // iOS: window.open with _blank is handed off to Safari by WKWebView
-        window.open(url, '_blank', 'noopener');
+        // iOS: WKWebView blocks programmatic window.open; a real tap is required.
+        // Show a minimal banner the user can tap to open in Safari.
+        var banner = document.createElement('div');
+        banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;' +
+          'display:flex;align-items:center;justify-content:space-between;' +
+          'background:#111;color:#fff;padding:0.85rem 1rem;' +
+          'font-family:system-ui,sans-serif;font-size:0.9rem;gap:1rem;';
+        banner.innerHTML =
+          '<span>Open in Safari for the best experience</span>' +
+          '<a href="' + url + '" target="_blank" rel="noopener" ' +
+            'style="flex-shrink:0;padding:0.45rem 0.9rem;background:#D32F2F;' +
+            'color:#fff;border-radius:6px;font-weight:700;font-size:0.85rem;' +
+            'text-decoration:none;">Open</a>';
+        document.body.appendChild(banner);
       }
     })();
   </script>

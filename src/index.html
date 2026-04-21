@@ -18,6 +18,28 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+  <script>
+    (function () {
+      var isTelegram = typeof window.TelegramWebviewProxy !== 'undefined' ||
+                       /\bTelegram\b/i.test(navigator.userAgent);
+      var isMobile   = /android|iphone|ipad/i.test(navigator.userAgent);
+      if (!isTelegram || !isMobile) return;
+
+      var url = location.href;
+
+      if (/android/i.test(navigator.userAgent)) {
+        // intent:// opens directly in Chrome (or fallback to system browser)
+        var intentUrl = 'intent://' + url.replace(/^https?:\/\//, '') +
+          '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' +
+          encodeURIComponent(url) + ';end';
+        window.location.replace(intentUrl);
+      } else {
+        // iOS: window.open with _blank is handed off to Safari by WKWebView
+        window.open(url, '_blank', 'noopener');
+      }
+    })();
+  </script>
+
   <app-root></app-root>
 </body>
 </html>

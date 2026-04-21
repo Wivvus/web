@@ -37,6 +37,33 @@ export class AuthService {
   }
 
   /**
+   * Build the Google OAuth2 redirect URL (authorization code flow).
+   * Works in all browsers including Telegram's in-app WebView.
+   */
+  public getGoogleOAuthUrl(): string {
+    const redirectUri = `${window.location.origin}/auth/google/callback`;
+    const params = new URLSearchParams({
+      client_id: environment.googleClientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: 'openid email profile',
+    });
+    return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+  }
+
+  public loginWithGoogleCode(code: string, redirectUri: string): Observable<any> {
+    return this.http.post<{ token: string, user: { id: number, name: string, email: string, avatar_url: string } }>(
+      `${environment.apiUrl}/auth/google/code`,
+      { code, redirect_uri: redirectUri }
+    );
+  }
+
+  public handleGoogleAuthResponse(token: string, user: { id: number, name: string, email: string, avatar_url: string }): void {
+    this.handleLocalAuthResponse(token, user);
+    this.setProvider('google');
+  }
+
+  /**
    * Initialize and render Google Sign-In button
    */
   public initializeGoogleSignIn(element: HTMLElement): void {

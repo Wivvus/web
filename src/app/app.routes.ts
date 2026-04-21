@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from '../components/login/login.component';
+import { AuthGoogleCallbackComponent } from '../components/auth-google-callback/authGoogleCallback.component';
 import { RegisterComponent } from '../components/register/register.component';
 import { SetPasswordComponent } from '../components/set-password/setPassword.component';
 import { authGuard } from '../guards/auth/auth.guard';
@@ -12,6 +13,7 @@ import { NotFoundComponent } from '../components/not-found/notFound.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'auth/google/callback', component: AuthGoogleCallbackComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'set-password', component: SetPasswordComponent },
   {

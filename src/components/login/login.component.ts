@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -13,8 +13,7 @@ import { MetricsService } from '../../services/metrics/metrics.service';
   templateUrl: "./login.template.html",
   styleUrl: "./login.style.less"
 })
-export class LoginComponent implements OnInit, AfterViewInit {
-  @ViewChild('googleButton', { static: true }) googleButton!: ElementRef;
+export class LoginComponent implements OnInit {
 
   message: string | null = null;
   emailLogin = false;
@@ -46,8 +45,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    this.authService.initializeGoogleSignIn(this.googleButton.nativeElement);
+  googleSignIn(): void {
+    window.location.href = this.authService.getGoogleOAuthUrl();
   }
 
   submitEmailLogin(): void {

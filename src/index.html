@@ -27,33 +27,35 @@
 
       var url = location.href;
 
+      // Programmatic redirects (window.location, window.open) are intercepted by
+      // Telegram's WebView on both platforms. A user-initiated tap on a link is
+      // the only reliable way to escape — so show a banner with an appropriate href.
+      var href, label;
       if (/android/i.test(navigator.userAgent)) {
-        // Guard against a redirect loop: if the intent:// fails Telegram loads the
-        // fallback URL back inside itself. sessionStorage persists across that reload
-        // but NOT in the new Chrome tab, so we can detect the loop case and stop.
-        if (sessionStorage.getItem('tg-rdr')) return;
-        sessionStorage.setItem('tg-rdr', '1');
-
-        var intentUrl = 'intent://' + url.replace(/^https?:\/\//, '') +
+        // intent:// href: Android routes tapped links to Chrome via the activity system
+        href = 'intent://' + url.replace(/^https?:\/\//, '') +
           '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' +
           encodeURIComponent(url) + ';end';
-        window.location.replace(intentUrl);
+        label = 'Open in Chrome';
       } else {
-        // iOS: WKWebView blocks programmatic window.open; a real tap is required.
-        // Show a minimal banner the user can tap to open in Safari.
-        var banner = document.createElement('div');
-        banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;' +
-          'display:flex;align-items:center;justify-content:space-between;' +
-          'background:#111;color:#fff;padding:0.85rem 1rem;' +
-          'font-family:system-ui,sans-serif;font-size:0.9rem;gap:1rem;';
-        banner.innerHTML =
-          '<span>Open in Safari for the best experience</span>' +
-          '<a href="' + url + '" target="_blank" rel="noopener" ' +
-            'style="flex-shrink:0;padding:0.45rem 0.9rem;background:#D32F2F;' +
-            'color:#fff;border-radius:6px;font-weight:700;font-size:0.85rem;' +
-            'text-decoration:none;">Open</a>';
-        document.body.appendChild(banner);
+        // iOS: tapped _blank links escape Telegram's WKWebView to Safari
+        href = url;
+        label = 'Open in Safari';
       }
+
+      var banner = document.createElement('div');
+      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;' +
+        'display:flex;align-items:center;justify-content:space-between;' +
+        'background:#111;color:#fff;padding:0.85rem 1rem;' +
+        'font-family:system-ui,sans-serif;font-size:0.9rem;gap:1rem;';
+      var target = /android/i.test(navigator.userAgent) ? '' : ' target="_blank" rel="noopener"';
+      banner.innerHTML =
+        '<span>Open in your browser for the best experience</span>' +
+        '<a href="' + href + '"' + target +
+          ' style="flex-shrink:0;padding:0.45rem 0.9rem;background:#D32F2F;' +
+          'color:#fff;border-radius:6px;font-weight:700;font-size:0.85rem;' +
+          'text-decoration:none;">' + label + '</a>';
+      document.body.appendChild(banner);
     })();
   </script>
 

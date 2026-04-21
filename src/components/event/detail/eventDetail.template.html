@@ -11,10 +11,10 @@
   </div>
 
   <div class="detail-content">
+    <h1 class="event-title">{{ event.name }}</h1>
+
     <div class="detail-body">
       <div class="detail-main">
-        <h1 class="event-title">{{ event.name }}</h1>
-
         <div class="detail-stats" *ngIf="event.distance_km || event.pace_min_km || event.start_time">
           <div class="stat" *ngIf="event.start_time">
             <span class="stat-label">When</span>
@@ -96,7 +96,7 @@
     </div>
 
     <!-- Ratings list -->
-    <div class="ratings-section" *ngIf="ratings.length > 0">
+    <div class="ratings-section" *ngIf="ratings != null && ratings.length > 0">
       <h3 class="section-heading">
         Ratings
         <span class="ratings-average" *ngIf="ratingsAverage">{{ ratingsAverage | number:'1.1-1' }} ★</span>

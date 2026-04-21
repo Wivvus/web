@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <!-- Google Sign-In Library -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -25,37 +25,37 @@
       var isMobile   = /android|iphone|ipad/i.test(navigator.userAgent);
       if (!isTelegram || !isMobile) return;
 
-      var url = location.href;
+      var url       = location.href;
+      var isAndroid = /android/i.test(navigator.userAgent);
 
-      // Programmatic redirects (window.location, window.open) are intercepted by
-      // Telegram's WebView on both platforms. A user-initiated tap on a link is
-      // the only reliable way to escape — so show a banner with an appropriate href.
-      var href, label;
-      if (/android/i.test(navigator.userAgent)) {
-        // intent:// href: Android routes tapped links to Chrome via the activity system
-        href = 'intent://' + url.replace(/^https?:\/\//, '') +
+      var href = isAndroid
+        ? 'intent://' + url.replace(/^https?:\/\//, '') +
           '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' +
-          encodeURIComponent(url) + ';end';
-        label = 'Open in Chrome';
-      } else {
-        // iOS: tapped _blank links escape Telegram's WKWebView to Safari
-        href = url;
-        label = 'Open in Safari';
-      }
+          encodeURIComponent(url) + ';end'
+        : url;
+      var label  = 'Open in your default browser';
+      var target = isAndroid ? '' : ' target="_blank" rel="noopener"';
 
-      var banner = document.createElement('div');
-      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;' +
-        'display:flex;align-items:center;justify-content:space-between;' +
-        'background:#111;color:#fff;padding:0.85rem 1rem;' +
-        'font-family:system-ui,sans-serif;font-size:0.9rem;gap:1rem;';
-      var target = /android/i.test(navigator.userAgent) ? '' : ' target="_blank" rel="noopener"';
-      banner.innerHTML =
-        '<span>Open in your browser for the best experience</span>' +
+      // Full-page screen — covers app-root so Angular never appears
+      var page = document.createElement('div');
+      page.style.cssText =
+        'position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;' +
+        'align-items:center;justify-content:center;' +
+        'background:#f5f5f5;padding:2rem;box-sizing:border-box;' +
+        'font-family:system-ui,sans-serif;text-align:center;';
+      page.innerHTML =
+        '<img src="/assets/logo.png" alt="Wivvus"' +
+          ' style="width:64px;height:64px;border-radius:16px;margin-bottom:1.5rem;">' +
+        '<p style="margin:0 0 0.5rem;font-size:1.1rem;font-weight:700;color:#111;">' +
+          'Open in your browser</p>' +
+        '<p style="margin:0 0 2rem;font-size:0.9rem;color:#666;line-height:1.6;max-width:280px;">' +
+          "Wivvus doesn\u2019t work properly inside Telegram\u2019s built-in browser." +
+          ' Tap the button below to continue.</p>' +
         '<a href="' + href + '"' + target +
-          ' style="flex-shrink:0;padding:0.45rem 0.9rem;background:#D32F2F;' +
-          'color:#fff;border-radius:6px;font-weight:700;font-size:0.85rem;' +
+          ' style="display:inline-block;padding:0.8rem 2rem;background:#D32F2F;' +
+          'color:#fff;border-radius:8px;font-weight:700;font-size:1rem;' +
           'text-decoration:none;">' + label + '</a>';
-      document.body.appendChild(banner);
+      document.body.appendChild(page);
     })();
   </script>
 

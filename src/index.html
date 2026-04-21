@@ -30,8 +30,8 @@
 
       var href = isAndroid
         ? 'intent://' + url.replace(/^https?:\/\//, '') +
-          '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' +
-          encodeURIComponent(url) + ';end'
+          '#Intent;scheme=https;action=android.intent.action.VIEW;' +
+          'category=android.intent.category.BROWSABLE;end'
         : url;
       var label  = 'Open in your default browser';
       var target = isAndroid ? '' : ' target="_blank" rel="noopener"';

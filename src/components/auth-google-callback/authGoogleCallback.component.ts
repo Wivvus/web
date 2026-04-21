@@ -38,9 +38,10 @@ export class AuthGoogleCallbackComponent implements OnInit {
         this.router.navigateByUrl(this.authService.redirectAfterLogin);
         this.authService.redirectAfterLogin = '/';
       },
-      error: () => {
-        this.message = 'Sign-in failed. Redirecting…';
-        setTimeout(() => this.router.navigate(['/login']), 1500);
+      error: (err) => {
+        const detail = err?.error?.error || err?.message || err?.status || 'unknown';
+        this.message = `Sign-in failed (${detail}). Redirecting…`;
+        setTimeout(() => this.router.navigate(['/login']), 3000);
       }
     });
   }

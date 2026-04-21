@@ -13,54 +13,23 @@
   <div class="detail-content">
     <h1 class="event-title">{{ event.name }}</h1>
 
-    <div class="detail-body">
-      <div class="detail-main">
-        <div class="detail-stats" *ngIf="event.distance_km || event.pace_min_km || event.start_time">
-          <div class="stat" *ngIf="event.start_time">
-            <span class="stat-label">When</span>
-            <span class="stat-value">{{ event.start_time | date:'medium' }}</span>
-          </div>
-          <div class="stat" *ngIf="event.distance_km">
-            <span class="stat-label">Distance</span>
-            <span class="stat-value">{{ event.distance_km }} km</span>
-          </div>
-          <div class="stat" *ngIf="event.all_paces || event.pace_min_km">
-            <span class="stat-label">Pace</span>
-            <span class="stat-value">{{ event.all_paces ? 'All paces welcome' : event.pace_min_km + ' min/km' }}</span>
-          </div>
+    <div class="detail-main">
+      <div class="detail-stats" *ngIf="event.distance_km || event.pace_min_km || event.start_time">
+        <div class="stat" *ngIf="event.start_time">
+          <span class="stat-label">When</span>
+          <span class="stat-value">{{ event.start_time | date:'medium' }}</span>
         </div>
-
-        <p class="detail-description" *ngIf="event.description">{{ event.description }}</p>
-      </div>
-
-      <div class="creator-panel">
-        <div class="creator-avatar">
-          <span class="avatar-initials">{{ event.creator_name.charAt(0) }}</span>
-          <img *ngIf="event.creator_avatar_url" [src]="event.creator_avatar_url" [alt]="event.creator_name" (error)="$any($event.target).style.display='none'">
+        <div class="stat" *ngIf="event.distance_km">
+          <span class="stat-label">Distance</span>
+          <span class="stat-value">{{ event.distance_km }} km</span>
         </div>
-        <span class="creator-organised-by">Organised by</span>
-        <span class="creator-name">{{ event.creator_name }}</span>
-        <div class="creator-rating-badge" *ngIf="event.creator_rating != null">
-          <span class="creator-rating-value">{{ event.creator_rating | number:'1.1-1' }}</span>
-          <span class="creator-rating-star">★</span>
-        </div>
-        <p class="creator-no-rating" *ngIf="event.creator_rating == null">No ratings yet</p>
-        <button class="btn-creator-ratings" (click)="toggleCreatorRatings()">
-          {{ showCreatorRatings ? 'Hide ratings' : 'View all ratings' }}
-        </button>
-        <div class="creator-ratings-panel" *ngIf="showCreatorRatings">
-          <p *ngIf="!creatorRatingsLoaded" class="creator-ratings-loading">Loading…</p>
-          <p *ngIf="creatorRatingsLoaded && creatorRatings.length === 0" class="creator-ratings-empty">No ratings yet.</p>
-          <div class="creator-rating-item" *ngFor="let r of creatorRatings">
-            <div class="creator-rating-item-header">
-              <span class="creator-rating-event">{{ r.event_name }}</span>
-              <span class="rating-stars">{{ r.score }}★</span>
-            </div>
-            <p class="rating-comment-text" *ngIf="r.comment">{{ r.comment }}</p>
-            <span class="creator-rating-reviewer">— {{ r.user_name }}</span>
-          </div>
+        <div class="stat" *ngIf="event.all_paces || event.pace_min_km">
+          <span class="stat-label">Pace</span>
+          <span class="stat-value">{{ event.all_paces ? 'All paces welcome' : event.pace_min_km + ' min/km' }}</span>
         </div>
       </div>
+
+      <p class="detail-description" *ngIf="event.description">{{ event.description }}</p>
     </div>
 
     <div class="attend-section">
@@ -71,6 +40,35 @@
       <ng-template #notLoggedIn>
         <button class="btn-attend" (click)="joinRun()">Join this run</button>
       </ng-template>
+    </div>
+
+    <div class="creator-panel">
+      <div class="creator-avatar">
+        <span class="avatar-initials">{{ event.creator_name.charAt(0) }}</span>
+        <img *ngIf="event.creator_avatar_url" [src]="event.creator_avatar_url" [alt]="event.creator_name" (error)="$any($event.target).style.display='none'">
+      </div>
+      <span class="creator-organised-by">Organised by</span>
+      <span class="creator-name">{{ event.creator_name }}</span>
+      <div class="creator-rating-badge" *ngIf="event.creator_rating != null">
+        <span class="creator-rating-value">{{ event.creator_rating | number:'1.1-1' }}</span>
+        <span class="creator-rating-star">★</span>
+      </div>
+      <p class="creator-no-rating" *ngIf="event.creator_rating == null">No ratings yet</p>
+      <button class="btn-creator-ratings" (click)="toggleCreatorRatings()">
+        {{ showCreatorRatings ? 'Hide ratings' : 'View all ratings' }}
+      </button>
+      <div class="creator-ratings-panel" *ngIf="showCreatorRatings">
+        <p *ngIf="!creatorRatingsLoaded" class="creator-ratings-loading">Loading…</p>
+        <p *ngIf="creatorRatingsLoaded && creatorRatings.length === 0" class="creator-ratings-empty">No ratings yet.</p>
+        <div class="creator-rating-item" *ngFor="let r of creatorRatings">
+          <div class="creator-rating-item-header">
+            <span class="creator-rating-event">{{ r.event_name }}</span>
+            <span class="rating-stars">{{ r.score }}★</span>
+          </div>
+          <p class="rating-comment-text" *ngIf="r.comment">{{ r.comment }}</p>
+          <span class="creator-rating-reviewer">— {{ r.user_name }}</span>
+        </div>
+      </div>
     </div>
 
     <div class="calendar-section" *ngIf="isAttending && event.start_time">

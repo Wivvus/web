@@ -238,7 +238,10 @@ export class EventDetailComponent implements OnInit {
   }
 
   get shareText(): string {
-    return `Join me for a run: ${this.event?.name}`;
+    const date = this.event?.start_time
+      ? new Date(this.event.start_time).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+      : '';
+    return `Run with us at ${this.event?.name} on ${date}, more info here: ${this.shareUrl}`;
   }
 
   shareTelegram(): void {
@@ -246,7 +249,7 @@ export class EventDetailComponent implements OnInit {
   }
 
   shareWhatsApp(): void {
-    window.open(`https://wa.me/?text=${encodeURIComponent(this.shareText + ' ' + this.shareUrl)}`, '_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(this.shareText)}`, '_blank');
   }
 
   shareSignal(): void {

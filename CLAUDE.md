@@ -46,8 +46,9 @@ make start-postgres
 
 **Routing** (`src/app/app.routes.ts`):
 - `/` — EventsListComponent (map + list)
-- `/events/:id` — EventDetailComponent
-- `/events/create`, `/events/:id/edit` — create/edit forms (auth-guarded)
+- `/run/:id` — EventDetailComponent
+- `/run/create`, `/run/:id/edit` — create/edit forms (auth-guarded)
+- `/events/:id`, `/events/create`, `/events/:id/edit` — legacy redirects to `/run/...`
 - `/account` — AccountComponent (auth-guarded)
 - `/login`, `/register`, `/set-password` — auth flows
 - `/auth/google/callback` — OAuth2 code exchange

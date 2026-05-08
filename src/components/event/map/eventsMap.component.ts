@@ -89,7 +89,7 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
           <span style="color:#666;font-size:0.82rem;">${date}</span>
           ${chips ? `<br><div style="margin-top:0.35rem;display:flex;gap:0.3rem;flex-wrap:wrap;">${chips}</div>` : ''}
           <br>
-          <a href="/events/${event.id}" style="color:#d32f2f;font-weight:600;font-size:0.85rem;">View event →</a>
+          <a href="/run/${event.id}" style="color:#d32f2f;font-weight:600;font-size:0.85rem;">View event →</a>
         `);
 
       this.markers.push(marker);

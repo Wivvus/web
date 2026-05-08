@@ -15,6 +15,6 @@ import { ApiService, UserData, UserProfile } from '../../../services/api/api.ser
 export class CreateEventButtonComponent {
   constructor(private router: Router){}
   onClick(): void {
-    this.router.navigate(['/events/create'])
+    this.router.navigate(['/run/create'])
   }
 }

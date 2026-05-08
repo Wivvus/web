@@ -24,24 +24,29 @@ export const routes: Routes = [
   },
 
   {
-    path: 'events/create',
+    path: 'run/create',
     component: CreateEventComponent,
     title: "Create a new event wivvus",
     canActivate: [authGuard],
     data: { message: 'You need to be logged in to create events' }
   },
   {
-    path: 'events/:id/edit',
+    path: 'run/:id/edit',
     component: EditEventComponent,
     title: 'Edit Event',
     canActivate: [authGuard],
     data: { message: 'You need to be logged in to edit events' }
   },
   {
-    path: 'events/:id',
+    path: 'run/:id',
     component: EventDetailComponent,
     title: 'Event'
   },
+
+  // Legacy redirects
+  { path: 'events/create', redirectTo: 'run/create', pathMatch: 'full' },
+  { path: 'events/:id/edit', redirectTo: 'run/:id/edit', pathMatch: 'full' },
+  { path: 'events/:id', redirectTo: 'run/:id', pathMatch: 'full' },
 
   {
     path: '', 

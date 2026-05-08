@@ -16,7 +16,7 @@ export class EventsListViewComponent {
     constructor(private router: Router) {}
 
     onClick(): void {
-        this.router.navigate(['/events', this.event.id]);
+        this.router.navigate(['/run', this.event.id]);
     }
 
     get formattedDate(): string {

@@ -29,7 +29,7 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   createEvent(event: Event, options: string[] = []): Observable<any> {
-      return this.http.post(`${this.apiUrl}/event`, { ...event, options })
+      return this.http.post(`${this.apiUrl}/run`, { ...event, options })
   }
 
   getEvents(
@@ -46,19 +46,19 @@ export class ApiService {
     if (filters?.maxLength) parts.push(`max_length=${filters.maxLength}`);
     if (filters?.dateFrom) parts.push(`date_from=${filters.dateFrom}`);
     const qs = parts.length ? `?${parts.join('&')}` : '';
-    return this.http.get<Event[]>(`${this.apiUrl}/events${qs}`);
+    return this.http.get<Event[]>(`${this.apiUrl}/runs${qs}`);
   }
 
   getEvent(id: number): Observable<Event> {
-    return this.http.get<Event>(`${this.apiUrl}/event/${id}`);
+    return this.http.get<Event>(`${this.apiUrl}/run/${id}`);
   }
 
   updateEvent(id: number, event: Event, options: string[] = []): Observable<Event> {
-    return this.http.put<Event>(`${this.apiUrl}/event/${id}`, { ...event, options });
+    return this.http.put<Event>(`${this.apiUrl}/run/${id}`, { ...event, options });
   }
 
   deleteEvent(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/event/${id}`);
+    return this.http.delete(`${this.apiUrl}/run/${id}`);
   }
 
   deleteAccount(): Observable<any> {
@@ -80,7 +80,7 @@ export class ApiService {
   }
 
   getRatings(id: number): Observable<{ ratings: RatingInfo[], average: number | null }> {
-    return this.http.get<any>(`${this.apiUrl}/event/${id}/ratings`);
+    return this.http.get<any>(`${this.apiUrl}/run/${id}/ratings`);
   }
 
   getCreatorRatings(userId: number): Observable<{ ratings: RatingInfoWithEvent[], average: number | null }> {
@@ -88,19 +88,19 @@ export class ApiService {
   }
 
   rateEvent(id: number, score: number, comment: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/event/${id}/rate`, { score, comment });
+    return this.http.post(`${this.apiUrl}/run/${id}/rate`, { score, comment });
   }
 
   getAttendees(id: number): Observable<{ attendees: { name: string, avatar_url: string, option_text?: string }[], is_attending: boolean, my_option_id: number | null }> {
-    return this.http.get<any>(`${this.apiUrl}/event/${id}/attendees`);
+    return this.http.get<any>(`${this.apiUrl}/run/${id}/attendees`);
   }
 
   attend(id: number, optionId?: number | null): Observable<any> {
-    return this.http.post(`${this.apiUrl}/event/${id}/attend`, optionId != null ? { option_id: optionId } : {});
+    return this.http.post(`${this.apiUrl}/run/${id}/attend`, optionId != null ? { option_id: optionId } : {});
   }
 
   dropAttendance(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/event/${id}/attend`);
+    return this.http.delete(`${this.apiUrl}/run/${id}/attend`);
   }
 
   /**

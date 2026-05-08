@@ -42,7 +42,7 @@ export class EventsListComponent implements OnInit {
   }
 
   goToCreate(): void {
-    this.router.navigate(['/events/create']);
+    this.router.navigate(['/run/create']);
   }
 
   private fetchEvents(): void {

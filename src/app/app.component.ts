@@ -22,6 +22,12 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (window.location.hostname === 'run.wivvus.com') {
+      const id = window.location.pathname.replace(/^\//, '');
+      window.location.replace(`https://wivvus.com/run/${id}`);
+      return;
+    }
+
     this.metrics.init();
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd)
@@ -46,8 +52,8 @@ export class AppComponent implements OnInit {
   logout(): void {
     const url = this.router.url;
     const isProtected = url.startsWith('/dashboard') ||
-                        url.startsWith('/events/create') ||
-                        /\/events\/\d+\/edit/.test(url);
+                        url.startsWith('/run/create') ||
+                        /\/run\/\d+\/edit/.test(url);
     this.authService.logout(isProtected ? '/' : url);
   }
 

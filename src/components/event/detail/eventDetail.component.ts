@@ -139,7 +139,7 @@ export class EventDetailComponent implements OnInit {
   }
 
   joinRun(): void {
-    const returnUrl = `/events/${this.event!.id}?attend=true`;
+    const returnUrl = `/run/${this.event!.id}?attend=true`;
     this.router.navigate(['/login'], {
       queryParams: { returnUrl, message: 'Login to join a run' }
     });
@@ -172,7 +172,7 @@ export class EventDetailComponent implements OnInit {
       action: 'TEMPLATE',
       text: `wivvus.com - ${this.event.name}`,
       dates: `${fmt(start)}/${fmt(end)}`,
-      details: `https://wivvus.com/events/${this.event.id}`,
+      details: `https://wivvus.com/run/${this.event.id}`,
       location
     });
     return `https://calendar.google.com/calendar/render?${params.toString()}`;
@@ -193,7 +193,7 @@ export class EventDetailComponent implements OnInit {
       `DTSTART:${fmt(start)}`,
       `DTEND:${fmt(end)}`,
       `SUMMARY:wivvus.com - ${this.event.name}`,
-      `DESCRIPTION:https://wivvus.com/events/${this.event.id}`,
+      `DESCRIPTION:https://wivvus.com/run/${this.event.id}`,
       location ? `LOCATION:${location}` : '',
       'END:VEVENT',
       'END:VCALENDAR'
@@ -218,7 +218,7 @@ export class EventDetailComponent implements OnInit {
   }
 
   onEdit(): void {
-    this.router.navigate(['/events', this.event!.id, 'edit']);
+    this.router.navigate(['/run', this.event!.id, 'edit']);
   }
 
   onDelete(): void {

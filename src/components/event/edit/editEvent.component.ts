@@ -92,7 +92,7 @@ export class EditEventComponent implements OnInit {
     this.apiService.updateEvent(this.event.id, this.event, options).subscribe({
       next: () => {
         this.metrics.eventEdited(this.event!.id);
-        this.router.navigate(['/events', this.event!.id]);
+        this.router.navigate(['/run', this.event!.id]);
       },
       error: (err) => {
         this.loading = false;
@@ -106,6 +106,6 @@ export class EditEventComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/events', this.event!.id]);
+    this.router.navigate(['/run', this.event!.id]);
   }
 }

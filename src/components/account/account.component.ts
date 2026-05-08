@@ -106,11 +106,11 @@ export class AccountComponent implements OnInit {
   }
 
   viewEvent(event: RunEvent): void {
-    this.router.navigate(['/events', event.id]);
+    this.router.navigate(['/run', event.id]);
   }
 
   editEvent(event: RunEvent): void {
-    this.router.navigate(['/events', event.id, 'edit']);
+    this.router.navigate(['/run', event.id, 'edit']);
   }
 
   deleteUserEvent(event: RunEvent): void {

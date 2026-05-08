@@ -1,14 +1,36 @@
 .app-header {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 2000;
   background: var(--red);
   height: var(--header-height);
   padding: 0 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  border-bottom: 1px solid var(--black);
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.18),
+    inset 0 -6px 16px var(--yellow),
+    inset 0 -12px 32px rgba(255,213,0,0.4);
+}
+
+.header-tagline {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow:
+    0 0 4px var(--yellow),
+    0 0 8px var(--yellow),
+    0 0 16px var(--yellow),
+    0 0 32px var(--yellow),
+    0 0 60px var(--yellow),
+    0 0 80px var(--yellow);
 }
 
 .header-left {

@@ -1,10 +1,5 @@
 <div class="detail-page" *ngIf="event">
-  <app-header [showBack]="true" [onBack]="goBack.bind(this)">
-    <div *ngIf="isOwner" class="owner-actions">
-      <button class="btn-edit" (click)="onEdit()">Edit</button>
-      <button class="btn-delete" (click)="onDelete()">Delete</button>
-    </div>
-  </app-header>
+  <app-header></app-header>
 
   <div class="detail-map">
     <app-map [height]="280" [readonly]="true" [pin]="pin"></app-map>
@@ -30,6 +25,11 @@
       </div>
 
       <p class="detail-description" *ngIf="event.description">{{ event.description }}</p>
+
+      <div class="owner-actions-panel" *ngIf="isOwner">
+        <button class="btn-edit" (click)="onEdit()">Edit this run</button>
+        <button class="btn-delete" (click)="onDelete()">Delete this run</button>
+      </div>
     </div>
 
     <div class="attend-section">

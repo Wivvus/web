@@ -79,6 +79,47 @@
   height: calc(100vh - var(--header-height) - 44px);
 }
 
+.map-sidebar {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  width: 230px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.map-create-cta {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1.5px dashed var(--border);
+  padding: 0.85rem 1rem;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: var(--red);
+    background: var(--bg);
+  }
+}
+
+.map-cta-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 0.15rem;
+}
+
+.map-cta-sub {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--red);
+  margin: 0;
+}
+
 .create-cta {
   margin-top: 0.5rem;
   padding: 1.25rem;

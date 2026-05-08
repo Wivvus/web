@@ -19,13 +19,19 @@
         }
         <div class="create-cta" (click)="goToCreate()">
           <p class="cta-text">Can't find the event you want?</p>
-          <p class="cta-sub">Why not make it now — it's free!</p>
+          <p class="cta-sub">Click here to make it now — it's free!</p>
         </div>
       </div>
     </div>
   } @else {
     <div class="map-view">
-      <event-filters [floating]="true" (filtersChange)="onFiltersChange($event)"></event-filters>
+      <div class="map-sidebar">
+        <event-filters [floating]="true" (filtersChange)="onFiltersChange($event)"></event-filters>
+        <div class="map-create-cta" (click)="goToCreate()">
+          <p class="map-cta-text">Can't find the event you want?</p>
+          <p class="map-cta-sub">Click here to make it now — it's free!</p>
+        </div>
+      </div>
       <events-map [filters]="filters"></events-map>
     </div>
   }

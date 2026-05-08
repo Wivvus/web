@@ -93,6 +93,25 @@
         <app-map [height]="200" [width]="480" (locationPicked)="onLocationPicked($event)"></app-map>
       </div>
 
+      <div class="form-group">
+        <label class="form-label">Sign-up Options <span class="form-label-hint">(optional — adds choices beyond "Join this run")</span></label>
+        <div class="options-list">
+          <div class="option-row" *ngFor="let opt of optionTexts; let i = index; trackBy: trackByIndex">
+            <span class="option-default-badge" *ngIf="i === 0">Default</span>
+            <input
+              class="form-input option-input"
+              type="text"
+              [name]="'option_' + i"
+              [(ngModel)]="optionTexts[i]"
+              placeholder="e.g. 5km, 10km, Half marathon…"
+            >
+            <button type="button" class="btn-remove-option" (click)="removeOption(i)">✕</button>
+          </div>
+        </div>
+        <p class="options-hint" *ngIf="optionTexts.length > 0">The first option is the default. If an option is removed, attendees are moved to the default.</p>
+        <button type="button" class="btn-add-option" (click)="addOption()">+ Add option</button>
+      </div>
+
       <p *ngIf="error" class="form-error">{{ error }}</p>
       <button type="submit" class="btn-submit" [disabled]="loading">
         {{ loading ? 'Creating...' : 'Create Event' }}

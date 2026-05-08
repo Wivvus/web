@@ -1,3 +1,8 @@
+export interface EventOption {
+  id: number;
+  text: string;
+}
+
 export interface EventFilters {
   minPace?: number;
   maxPace?: number;
@@ -26,6 +31,7 @@ export class Event {
     public creator_avatar_url: string = "",
     public attendee_count: number = 0,
     public creator_rating: number | null = null,
+    public options: EventOption[] = [],
   ) { }
 }
 

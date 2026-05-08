@@ -34,11 +34,33 @@
 
     <div class="attend-section">
       <ng-container *ngIf="isLoggedIn; else notLoggedIn">
-        <button class="btn-attend" *ngIf="!isAttending" (click)="onAttend()">Join this run</button>
-        <button class="btn-drop" *ngIf="isAttending" (click)="onDrop()">Drop out</button>
+        <!-- Event has custom options -->
+        <ng-container *ngIf="event && event.options && event.options.length > 0; else defaultJoin">
+          <div class="attend-options">
+            <button
+              *ngFor="let opt of event.options"
+              class="btn-option"
+              [class.btn-option-selected]="isAttending && myOptionId === opt.id"
+              (click)="selectOption(opt)"
+            >{{ opt.text }}</button>
+          </div>
+          <button class="btn-drop" *ngIf="isAttending" (click)="onDrop()">Drop out</button>
+        </ng-container>
+        <!-- Default single join button -->
+        <ng-template #defaultJoin>
+          <button class="btn-attend" *ngIf="!isAttending" (click)="onAttend()">Join this run</button>
+          <button class="btn-drop" *ngIf="isAttending" (click)="onDrop()">Drop out</button>
+        </ng-template>
       </ng-container>
       <ng-template #notLoggedIn>
-        <button class="btn-attend" (click)="joinRun()">Join this run</button>
+        <ng-container *ngIf="event && event.options && event.options.length > 0; else defaultJoinGuest">
+          <div class="attend-options">
+            <button *ngFor="let opt of event.options" class="btn-option" (click)="joinRun()">{{ opt.text }}</button>
+          </div>
+        </ng-container>
+        <ng-template #defaultJoinGuest>
+          <button class="btn-attend" (click)="joinRun()">Join this run</button>
+        </ng-template>
       </ng-template>
     </div>
 
@@ -113,15 +135,39 @@
         {{ event.attendee_count }} {{ event.attendee_count === 1 ? 'runner' : 'runners' }} attending
       </h3>
       <p class="attendees-login-hint" *ngIf="!isLoggedIn">Login to see attendees</p>
-      <div class="attendees-list" *ngIf="isLoggedIn && attendees.length > 0">
-        <div class="attendee" *ngFor="let a of attendees; trackBy: trackByName">
-          <div class="attendee-avatar">
-            <span class="avatar-initials">{{ a.name.charAt(0) }}</span>
-            <img *ngIf="a.avatar_url" [src]="a.avatar_url" [alt]="a.name" (error)="$any($event.target).style.display='none'">
+      <ng-container *ngIf="isLoggedIn && attendees.length > 0">
+        <!-- Grouped by option -->
+        <ng-container *ngIf="attendeeGroups.length > 0; else flatList">
+          <div class="attendee-group" *ngFor="let group of attendeeGroups">
+            <div class="attendee-group-header">
+              <span class="attendee-group-label">{{ group.label }}</span>
+              <span class="attendee-group-count">{{ group.attendees.length }}</span>
+            </div>
+            <div class="attendees-list" *ngIf="group.attendees.length > 0">
+              <div class="attendee" *ngFor="let a of group.attendees; trackBy: trackByName">
+                <div class="attendee-avatar">
+                  <span class="avatar-initials">{{ a.name.charAt(0) }}</span>
+                  <img *ngIf="a.avatar_url" [src]="a.avatar_url" [alt]="a.name" (error)="$any($event.target).style.display='none'">
+                </div>
+                <span class="attendee-name">{{ a.name }}</span>
+              </div>
+            </div>
+            <p class="attendee-group-empty" *ngIf="group.attendees.length === 0">No one yet</p>
           </div>
-          <span class="attendee-name">{{ a.name }}</span>
-        </div>
-      </div>
+        </ng-container>
+        <!-- Flat list (no options) -->
+        <ng-template #flatList>
+          <div class="attendees-list">
+            <div class="attendee" *ngFor="let a of attendees; trackBy: trackByName">
+              <div class="attendee-avatar">
+                <span class="avatar-initials">{{ a.name.charAt(0) }}</span>
+                <img *ngIf="a.avatar_url" [src]="a.avatar_url" [alt]="a.name" (error)="$any($event.target).style.display='none'">
+              </div>
+              <span class="attendee-name">{{ a.name }}</span>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
     </div>
 
   </div>

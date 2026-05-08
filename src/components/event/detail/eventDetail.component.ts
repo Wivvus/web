@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { AuthService } from '../../../services/authentication/auth.service';
-import { Event, RatingInfo, RatingInfoWithEvent } from '../../../models/event.model';
+import { Event, EventOption, RatingInfo, RatingInfoWithEvent } from '../../../models/event.model';
 import { MapComponent, LatLng } from '../../map/map.component';
 import { HeaderComponent } from '../../header/header.component';
 import { MetricsService } from '../../../services/metrics/metrics.service';
@@ -19,8 +19,9 @@ import { MetricsService } from '../../../services/metrics/metrics.service';
 })
 export class EventDetailComponent implements OnInit {
   event?: Event;
-  attendees: { name: string, avatar_url: string }[] = [];
+  attendees: { name: string, avatar_url: string, option_text?: string }[] = [];
   isAttending: boolean = false;
+  myOptionId: number | null = null;
   ratings: RatingInfo[] = [];
   ratingsAverage: number | null = null;
   myRating: number = 0;
@@ -110,6 +111,7 @@ export class EventDetailComponent implements OnInit {
       next: res => {
         this.attendees = res.attendees;
         this.isAttending = res.is_attending;
+        this.myOptionId = res.my_option_id;
         if (this.event) this.event.attendee_count = res.attendees.length;
         if (autoAttend && !res.is_attending) {
           this.apiService.attend(id).subscribe({
@@ -143,14 +145,20 @@ export class EventDetailComponent implements OnInit {
     });
   }
 
-  onAttend(): void {
+  onAttend(optionId?: number | null): void {
     if (!this.event) return;
-    this.apiService.attend(this.event.id).subscribe({
+    this.apiService.attend(this.event.id, optionId).subscribe({
       next: () => {
         this.metrics.eventAttended(this.event!.id);
         this.loadAttendees(this.event!.id);
       }
     });
+  }
+
+  selectOption(option: EventOption): void {
+    if (!this.event) return;
+    if (this.isAttending && this.myOptionId === option.id) return;
+    this.onAttend(option.id);
   }
 
   get googleCalendarUrl(): string | null {
@@ -227,6 +235,20 @@ export class EventDetailComponent implements OnInit {
 
   trackByName(_: number, a: { name: string }): string {
     return a.name;
+  }
+
+  get attendeeGroups(): { label: string, attendees: { name: string, avatar_url: string, option_text?: string }[] }[] {
+    if (!this.event?.options?.length) return [];
+    const map = new Map<string, { name: string, avatar_url: string, option_text?: string }[]>();
+    for (const opt of this.event.options) {
+      map.set(opt.text, []);
+    }
+    for (const a of this.attendees) {
+      const key = a.option_text ?? this.event.options[0].text;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(a);
+    }
+    return Array.from(map.entries()).map(([label, attendees]) => ({ label, attendees }));
   }
 
 goBack(): void {

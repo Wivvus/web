@@ -21,6 +21,7 @@ export class CreateEventComponent implements OnDestroy {
     startTime: string = "";
     error: string | null = null;
     loading = false;
+    optionTexts: string[] = [];
     private submitted = false;
 
     constructor(
@@ -57,13 +58,26 @@ export class CreateEventComponent implements OnDestroy {
         this.event.location = { lat: location.lat, long: location.lng };
     }
 
+    addOption(): void {
+        this.optionTexts.push('');
+    }
+
+    removeOption(index: number): void {
+        this.optionTexts.splice(index, 1);
+    }
+
+    trackByIndex(index: number): number {
+        return index;
+    }
+
     onSubmit(): void {
         this.error = null;
         if (!this.event.name.trim()) { this.error = 'Event name is required.'; return; }
         if (!this.event.location.lat || !this.event.location.long) { this.error = 'Please pick a location on the map.'; return; }
         if (!this.event.start_time) { this.error = 'Start date and time are required.'; return; }
+        const options = this.optionTexts.map(t => t.trim()).filter(t => t.length > 0);
         this.loading = true;
-        this.apiService.createEvent(this.event).subscribe({
+        this.apiService.createEvent(this.event, options).subscribe({
             next: (created: any) => {
                 this.submitted = true;
                 this.metrics.eventCreated(created.id);

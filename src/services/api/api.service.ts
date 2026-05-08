@@ -28,8 +28,8 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  createEvent(event: Event): Observable<any> {
-      return this.http.post(`${this.apiUrl}/event`, event)
+  createEvent(event: Event, options: string[] = []): Observable<any> {
+      return this.http.post(`${this.apiUrl}/event`, { ...event, options })
   }
 
   getEvents(
@@ -53,8 +53,8 @@ export class ApiService {
     return this.http.get<Event>(`${this.apiUrl}/event/${id}`);
   }
 
-  updateEvent(id: number, event: Event): Observable<Event> {
-    return this.http.put<Event>(`${this.apiUrl}/event/${id}`, event);
+  updateEvent(id: number, event: Event, options: string[] = []): Observable<Event> {
+    return this.http.put<Event>(`${this.apiUrl}/event/${id}`, { ...event, options });
   }
 
   deleteEvent(id: number): Observable<any> {
@@ -91,12 +91,12 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/event/${id}/rate`, { score, comment });
   }
 
-  getAttendees(id: number): Observable<{ attendees: { name: string, avatar_url: string }[], is_attending: boolean }> {
+  getAttendees(id: number): Observable<{ attendees: { name: string, avatar_url: string, option_text?: string }[], is_attending: boolean, my_option_id: number | null }> {
     return this.http.get<any>(`${this.apiUrl}/event/${id}/attendees`);
   }
 
-  attend(id: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/event/${id}/attend`, {});
+  attend(id: number, optionId?: number | null): Observable<any> {
+    return this.http.post(`${this.apiUrl}/event/${id}/attend`, optionId != null ? { option_id: optionId } : {});
   }
 
   dropAttendance(id: number): Observable<any> {

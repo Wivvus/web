@@ -21,6 +21,7 @@ export class EditEventComponent implements OnInit {
   startTime: string = "";
   error: string | null = null;
   loading = false;
+  optionTexts: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -34,6 +35,7 @@ export class EditEventComponent implements OnInit {
     this.apiService.getEvent(id).subscribe({
       next: event => {
         this.event = event;
+        this.optionTexts = (event.options || []).map(o => o.text);
         if (event.start_time) {
           const dt = new Date(event.start_time);
           this.startDate = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
@@ -67,14 +69,27 @@ export class EditEventComponent implements OnInit {
     }
   }
 
+  addOption(): void {
+    this.optionTexts.push('');
+  }
+
+  removeOption(index: number): void {
+    this.optionTexts.splice(index, 1);
+  }
+
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   onSubmit(): void {
     if (!this.event) return;
     this.error = null;
     if (!this.event.name.trim()) { this.error = 'Event name is required.'; return; }
     if (!this.event.location.lat || !this.event.location.long) { this.error = 'Please pick a location on the map.'; return; }
     if (!this.event.start_time) { this.error = 'Start date and time are required.'; return; }
+    const options = this.optionTexts.map(t => t.trim()).filter(t => t.length > 0);
     this.loading = true;
-    this.apiService.updateEvent(this.event.id, this.event).subscribe({
+    this.apiService.updateEvent(this.event.id, this.event, options).subscribe({
       next: () => {
         this.metrics.eventEdited(this.event!.id);
         this.router.navigate(['/events', this.event!.id]);

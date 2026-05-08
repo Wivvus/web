@@ -233,6 +233,39 @@ export class EventDetailComponent implements OnInit {
     });
   }
 
+  get shareUrl(): string {
+    return `https://run.wivvus.com/${this.event?.id}`;
+  }
+
+  get shareText(): string {
+    return `Join me for a run: ${this.event?.name}`;
+  }
+
+  shareTelegram(): void {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(this.shareUrl)}&text=${encodeURIComponent(this.shareText)}`, '_blank');
+  }
+
+  shareWhatsApp(): void {
+    window.open(`https://wa.me/?text=${encodeURIComponent(this.shareText + ' ' + this.shareUrl)}`, '_blank');
+  }
+
+  shareSignal(): void {
+    if (navigator.share) {
+      navigator.share({ title: this.event?.name, text: this.shareText, url: this.shareUrl });
+    } else {
+      this.copyLink();
+    }
+  }
+
+  linkCopied = false;
+
+  copyLink(): void {
+    navigator.clipboard.writeText(this.shareUrl).then(() => {
+      this.linkCopied = true;
+      setTimeout(() => this.linkCopied = false, 2000);
+    });
+  }
+
   trackByName(_: number, a: { name: string }): string {
     return a.name;
   }

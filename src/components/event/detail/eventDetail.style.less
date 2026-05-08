@@ -198,6 +198,54 @@
   margin: 0;
 }
 
+.share-section {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.share-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.share-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-share {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  padding: 0;
+  flex-shrink: 0;
+
+  svg { width: 20px; height: 20px; }
+  &:hover { opacity: 0.85; }
+  &:active { transform: scale(0.93); }
+}
+
+.btn-share-telegram { background: #229ED9; color: #fff; }
+.btn-share-whatsapp { background: #25D366; color: #fff; }
+.btn-share-signal   { background: #3A76F0; color: #fff; }
+.btn-share-copy     { background: var(--border); color: var(--text); }
+.btn-share-copied   { background: #27ae60; color: #fff; }
+
 .btn-creator-ratings {
   display: flex;
   align-items: center;

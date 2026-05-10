@@ -6,6 +6,7 @@
     <nav class="account-nav">
       <button class="nav-item" [class.active]="activeSection === 'settings'" (click)="switchSection('settings')">Settings</button>
       <button class="nav-item" [class.active]="activeSection === 'events'" (click)="switchSection('events')">Manage Events</button>
+      <button class="nav-item" [class.active]="activeSection === 'ratings'" (click)="switchSection('ratings')">My Ratings</button>
     </nav>
 
     <div class="account-main">
@@ -113,6 +114,36 @@
             </div>
           </div>
         </div>
+      </ng-container>
+
+      <!-- My Ratings -->
+      <ng-container *ngIf="activeSection === 'ratings'">
+        <h1 class="page-title">My Ratings</h1>
+
+        <div *ngIf="ratingsLoading" class="events-loading">Loading...</div>
+
+        <ng-container *ngIf="!ratingsLoading">
+          <div class="ratings-summary" *ngIf="myRatings.length > 0">
+            <span class="ratings-avg-value">{{ myRatingsAverage | number:'1.1-1' }}</span>
+            <span class="ratings-avg-star">★</span>
+            <span class="ratings-avg-count">from {{ myRatings.length }} {{ myRatings.length === 1 ? 'rating' : 'ratings' }}</span>
+          </div>
+
+          <div *ngIf="myRatings.length === 0" class="events-empty">
+            No ratings yet.
+          </div>
+
+          <div class="ratings-list" *ngIf="myRatings.length > 0">
+            <div class="rating-card" *ngFor="let r of myRatings">
+              <div class="rating-card-header">
+                <span class="rating-event-name" (click)="viewRatingEvent(r)">{{ r.event_name }}</span>
+                <span class="rating-score">{{ r.score }}★</span>
+              </div>
+              <p class="rating-comment" *ngIf="r.comment">{{ r.comment }}</p>
+              <span class="rating-reviewer">— {{ r.user_name }}</span>
+            </div>
+          </div>
+        </ng-container>
       </ng-container>
 
     </div>

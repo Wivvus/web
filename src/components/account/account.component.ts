@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/authentication/auth.service';
 import { ApiService } from '../../services/api/api.service';
 import { MetricsService } from '../../services/metrics/metrics.service';
-import { Event as RunEvent } from '../../models/event.model';
+import { Event as RunEvent, RatingInfoWithEvent } from '../../models/event.model';
 
 @Component({
   selector: 'app-account',
@@ -16,7 +16,7 @@ import { Event as RunEvent } from '../../models/event.model';
   styleUrl: './account.style.less'
 })
 export class AccountComponent implements OnInit {
-  activeSection: 'settings' | 'events' = 'settings';
+  activeSection: 'settings' | 'events' | 'ratings' = 'settings';
 
   // Settings
   name: string = '';
@@ -31,6 +31,11 @@ export class AccountComponent implements OnInit {
   passwordLoading = false;
   avatarLoading = false;
   avatarError: string | null = null;
+
+  // Ratings
+  myRatings: RatingInfoWithEvent[] = [];
+  myRatingsAverage: number | null = null;
+  ratingsLoading = false;
 
   // Events
   userEvents: RunEvent[] = [];
@@ -57,11 +62,28 @@ export class AccountComponent implements OnInit {
     });
   }
 
-  switchSection(section: 'settings' | 'events'): void {
+  switchSection(section: 'settings' | 'events' | 'ratings'): void {
     this.activeSection = section;
     if (section === 'events' && this.userEvents.length === 0 && !this.eventsLoading) {
       this.loadUserEvents();
     }
+    if (section === 'ratings' && !this.ratingsLoading && this.myRatings.length === 0) {
+      this.loadMyRatings();
+    }
+  }
+
+  private loadMyRatings(): void {
+    const userId = this.authService.getUser()?.db_id;
+    if (!userId) return;
+    this.ratingsLoading = true;
+    this.apiService.getCreatorRatings(userId).subscribe({
+      next: res => {
+        this.myRatings = res.ratings;
+        this.myRatingsAverage = res.average;
+        this.ratingsLoading = false;
+      },
+      error: () => { this.ratingsLoading = false; }
+    });
   }
 
   private loadUserEvents(): void {
@@ -182,6 +204,10 @@ export class AccountComponent implements OnInit {
       },
       error: () => alert('Failed to delete account. Please try again.')
     });
+  }
+
+  viewRatingEvent(rating: RatingInfoWithEvent): void {
+    this.router.navigate(['/run', rating.event_id]);
   }
 
   goBack(): void {

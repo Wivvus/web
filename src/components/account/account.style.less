@@ -490,3 +490,74 @@
 
   .settings-card { padding: 1.25rem 1.5rem; }
 }
+
+.ratings-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.ratings-avg-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.ratings-avg-star {
+  font-size: 1.5rem;
+  color: var(--yellow);
+  line-height: 1;
+}
+
+.ratings-avg-count {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.ratings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rating-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+}
+
+.rating-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.25rem;
+}
+
+.rating-event-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  &:hover { text-decoration: underline; }
+}
+
+.rating-score {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--yellow);
+  flex-shrink: 0;
+}
+
+.rating-comment {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0.25rem 0;
+}
+
+.rating-reviewer {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}

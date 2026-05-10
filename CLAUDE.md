@@ -8,6 +8,8 @@ This project spans two repos that are developed together:
 - **`/Wivvus/web`** — Angular 17 frontend (this repo)
 - **`/Wivvus/api`** — Go/Gin backend (`/home/phil/proyectos/src/github.com/Wivvus/api`)
 
+Issues and tasks are tracked in the **[Run Wivvus](https://github.com/orgs/Wivvus/projects/2)** GitHub project.
+
 ## Commands
 
 ### Frontend (this repo)

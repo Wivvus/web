@@ -34,6 +34,10 @@ export class EditEventComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.apiService.getEvent(id).subscribe({
       next: event => {
+        if (event.start_time && new Date(event.start_time) < new Date()) {
+          this.router.navigate(['/run', event.id]);
+          return;
+        }
         this.event = event;
         this.optionTexts = (event.options || []).map(o => o.text);
         if (event.start_time) {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { EventsListViewComponent } from "../listView/eventListView.component";
 import { Event, EventFilters } from '../../../models/event.model';
@@ -21,10 +21,16 @@ export class EventsListComponent implements OnInit {
     events: Event[] = [];
     view: 'list' | 'map' = 'list';
     filters: EventFilters = {};
+    flashMessage: string | null = null;
 
   constructor(private apiService: ApiService, private router: Router, private metrics: MetricsService) {}
 
     ngOnInit(): void {
+        const nav = this.router.getCurrentNavigation();
+        this.flashMessage = nav?.extras?.state?.['message'] ?? (history.state?.message ?? null);
+        if (this.flashMessage) {
+          setTimeout(() => this.flashMessage = null, 5000);
+        }
         this.fetchEvents();
     }
 

@@ -44,6 +44,10 @@ export class EventDetailComponent implements OnInit {
 
     this.apiService.getEvent(id).subscribe({
       next: event => {
+        if (event.start_time && new Date(event.start_time) < new Date()) {
+          this.router.navigate(['/'], { state: { message: 'That run has already taken place.' } });
+          return;
+        }
         this.event = event;
         this.title.setTitle(event.name);
         this.metrics.eventViewed(event.id, event.name);

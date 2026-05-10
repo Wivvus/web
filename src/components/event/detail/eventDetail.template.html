@@ -120,18 +120,9 @@
       </div>
     </div>
 
-    <!-- Rating form: past events, attendees only, not owner -->
-    <div class="rating-section" *ngIf="canRate">
-      <h3 class="section-heading">Rate this event</h3>
-      <p *ngIf="ratingSubmitted" class="rating-success">Thanks for your rating!</p>
-      <ng-container *ngIf="!ratingSubmitted">
-        <p *ngIf="ratingError" class="rating-error">{{ ratingError }}</p>
-        <div class="star-picker">
-          <button *ngFor="let s of [1,2,3,4,5]" class="star" [class.active]="myRating >= s" (click)="setRating(s)">★</button>
-        </div>
-        <textarea class="rating-comment" [(ngModel)]="myComment" placeholder="Add a comment (optional)" rows="3"></textarea>
-        <button class="btn-submit-rating" [disabled]="myRating === 0" (click)="submitRating()">Submit rating</button>
-      </ng-container>
+    <!-- Rate this run CTA: past events, attendees only, not owner -->
+    <div class="rating-cta" *ngIf="canRate">
+      <button class="btn-rate" (click)="goToReview()">Rate this run</button>
     </div>
 
     <!-- Ratings list -->

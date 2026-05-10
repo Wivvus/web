@@ -10,6 +10,7 @@ import { EventDetailComponent } from '../components/event/detail/eventDetail.com
 import { EditEventComponent } from '../components/event/edit/editEvent.component';
 import { AccountComponent } from '../components/account/account.component';
 import { NotFoundComponent } from '../components/not-found/notFound.component';
+import { EventReviewComponent } from '../components/event/review/eventReview.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -36,6 +37,13 @@ export const routes: Routes = [
     title: 'Edit Event',
     canActivate: [authGuard],
     data: { message: 'You need to be logged in to edit events' }
+  },
+  {
+    path: 'run/:id/review',
+    component: EventReviewComponent,
+    title: 'Rate this run',
+    canActivate: [authGuard],
+    data: { message: 'You need to be logged in to rate a run' }
   },
   {
     path: 'run/:id',

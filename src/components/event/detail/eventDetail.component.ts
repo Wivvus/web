@@ -24,10 +24,6 @@ export class EventDetailComponent implements OnInit {
   myOptionId: number | null = null;
   ratings: RatingInfo[] = [];
   ratingsAverage: number | null = null;
-  myRating: number = 0;
-  myComment: string = '';
-  ratingSubmitted: boolean = false;
-  ratingError: string | null = null;
   creatorRatings: RatingInfoWithEvent[] = [];
   creatorRatingsAverage: number | null = null;
   showCreatorRatings: boolean = false;
@@ -90,20 +86,8 @@ export class EventDetailComponent implements OnInit {
     return this.isInPast && this.isAttending && !this.isOwner;
   }
 
-  setRating(score: number): void {
-    this.myRating = score;
-  }
-
-  submitRating(): void {
-    if (!this.event || this.myRating === 0) return;
-    this.ratingError = null;
-    this.apiService.rateEvent(this.event.id, this.myRating, this.myComment).subscribe({
-      next: () => {
-        this.ratingSubmitted = true;
-        this.loadRatings(this.event!.id);
-      },
-      error: err => { this.ratingError = err.error?.error || 'Failed to submit rating'; }
-    });
+  goToReview(): void {
+    this.router.navigate(['/run', this.event!.id, 'review']);
   }
 
   private loadAttendees(id: number, autoAttend = false): void {

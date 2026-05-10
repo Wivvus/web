@@ -1,0 +1,30 @@
+<div class="review-page" *ngIf="event">
+  <app-header></app-header>
+
+  <div class="review-content">
+    <h1 class="review-title">{{ event.name }}</h1>
+
+    <div class="review-owner-error" *ngIf="isOwner">
+      <p>You can't rate your own run.</p>
+      <button class="btn-back" (click)="goBack()">Back to run</button>
+    </div>
+
+    <div class="review-card" *ngIf="!submitted && !isOwner">
+      <h2 class="review-heading">Rate this run</h2>
+      <p *ngIf="error" class="review-error">{{ error }}</p>
+      <div class="star-picker">
+        <button *ngFor="let s of [1,2,3,4,5]" class="star" [class.active]="myRating >= s" (click)="setRating(s)">★</button>
+      </div>
+      <textarea class="rating-comment" [(ngModel)]="myComment" placeholder="Add a comment (optional)" rows="4"></textarea>
+      <div class="review-actions">
+        <button class="btn-cancel" (click)="goBack()">Cancel</button>
+        <button class="btn-submit" [disabled]="myRating === 0" (click)="submit()">Submit rating</button>
+      </div>
+    </div>
+
+    <div class="review-success" *ngIf="submitted && !isOwner">
+      <p class="success-message">Thanks for your rating!</p>
+      <button class="btn-back" (click)="goBack()">Back to run</button>
+    </div>
+  </div>
+</div>

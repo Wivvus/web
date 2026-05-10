@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
+import { AuthService } from '../../../services/authentication/auth.service';
 import { Event } from '../../../models/event.model';
 import { MapComponent, LatLng } from '../../map/map.component';
 import { HeaderComponent } from '../../header/header.component';
@@ -27,6 +28,7 @@ export class EditEventComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private apiService: ApiService,
+    private authService: AuthService,
     private metrics: MetricsService
   ) {}
 
@@ -35,6 +37,11 @@ export class EditEventComponent implements OnInit {
     this.apiService.getEvent(id).subscribe({
       next: event => {
         if (event.start_time && new Date(event.start_time) < new Date()) {
+          this.router.navigate(['/run', event.id]);
+          return;
+        }
+        const user = this.authService.getUser();
+        if (!user?.db_id || event.creator_id !== user.db_id) {
           this.router.navigate(['/run', event.id]);
           return;
         }

@@ -18,8 +18,18 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
+  // Short URLs: {event-type}.wivvus.com/:id → wivvus.com/:event-type/:id
+  // Only fires on subdomains (e.g. run.wivvus.com), not on the canonical domain itself.
+  server.get(/^\/(\d+)$/, (req, res, next) => {
+    const host = req.hostname;
+    const match = host.match(/^([a-z]+)\.wivvus\.com$/);
+    if (match) {
+      res.redirect(301, `https://wivvus.com/${match[1]}${req.path}`);
+    } else {
+      next();
+    }
+  });
+
   // Serve static files from /browser
   server.get('*.*', express.static(browserDistFolder, {
     maxAge: '1y'

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -28,6 +28,7 @@ export class EventDetailComponent implements OnInit {
   creatorRatingsAverage: number | null = null;
   showCreatorRatings: boolean = false;
   creatorRatingsLoaded: boolean = false;
+  private platformId = inject(PLATFORM_ID);
 
   constructor(
     private route: ActivatedRoute,
@@ -44,7 +45,7 @@ export class EventDetailComponent implements OnInit {
 
     this.apiService.getEvent(id).subscribe({
       next: event => {
-        if (event.start_time && new Date(event.start_time) < new Date()) {
+        if (isPlatformBrowser(this.platformId) && event.start_time && new Date(event.start_time) < new Date()) {
           this.router.navigate(['/'], { state: { message: 'That run has already taken place.' } });
           return;
         }
@@ -56,7 +57,9 @@ export class EventDetailComponent implements OnInit {
           this.loadAttendees(id, autoAttend);
         }
       },
-      error: () => this.router.navigate(['/'])
+      error: () => {
+        if (isPlatformBrowser(this.platformId)) this.router.navigate(['/']);
+      }
     });
   }
 

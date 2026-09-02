@@ -1,23 +1,14 @@
-import { Component, Input, AfterViewInit, OnChanges, OnDestroy, ViewChild, ElementRef, NgZone } from '@angular/core';
-import * as L from 'leaflet';
+import { Component, Input, AfterViewInit, OnChanges, OnDestroy, ViewChild, ElementRef, NgZone, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Event, EventFilters } from '../../../models/event.model';
 import { ApiService } from '../../../services/api/api.service';
 import { Router } from '@angular/router';
 import { LocationService } from '../../../services/location/location.service';
 
-const defaultIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
 @Component({
   selector: 'events-map',
   standalone: true,
+  host: { ngSkipHydration: 'true' },
   template: `<div #mapEl style="width:100%;height:100%;display:block;"></div>`,
   styles: [`:host { display: block; width: 100%; height: 100%; }`]
 })
@@ -25,9 +16,12 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() filters: EventFilters = {};
   @ViewChild('mapEl') mapEl!: ElementRef;
 
-  private map?: L.Map;
-  private markers: L.Marker[] = [];
+  private platformId = inject(PLATFORM_ID);
+  private map?: any;
+  private markers: any[] = [];
   private watchId?: number;
+  private L?: any;
+  private defaultIcon?: any;
 
   constructor(private ngZone: NgZone, private apiService: ApiService, private router: Router, private location: LocationService) {}
 
@@ -38,16 +32,32 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.map = L.map(this.mapEl.nativeElement, { zoom: 12, center: [20, 0] });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(this.map);
+    if (!isPlatformBrowser(this.platformId)) return;
 
-      this.map.on('moveend', () => this.ngZone.run(() => this.fetchAndRender()));
-      this.map.on('zoomend', () => this.ngZone.run(() => this.fetchAndRender()));
+    import('leaflet').then(mod => {
+      const L = (mod as any).default ?? mod;
+      this.L = L;
+      this.defaultIcon = L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
 
-      this.centerOnUserLocation();
+      setTimeout(() => {
+        this.map = L.map(this.mapEl.nativeElement, { zoom: 12, center: [20, 0] });
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(this.map);
+
+        this.map.on('moveend', () => this.ngZone.run(() => this.fetchAndRender()));
+        this.map.on('zoomend', () => this.ngZone.run(() => this.fetchAndRender()));
+
+        this.centerOnUserLocation();
+      });
     });
   }
 
@@ -82,7 +92,7 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
         ...(event.all_paces ? ['All paces welcome'] : (event.pace_min_km ? [`${event.pace_min_km} min/km`] : []))
       ].map(t => `<span style="font-size:0.75rem;font-weight:600;color:#d32f2f;background:#fdecea;border-radius:999px;padding:0.15rem 0.55rem;">${t}</span>`).join(' ');
 
-      const marker = L.marker([lat, lng], { icon: defaultIcon })
+      const marker = this.L.marker([lat, lng], { icon: this.defaultIcon })
         .addTo(this.map!)
         .bindPopup(`
           <strong style="font-size:0.95rem;">${event.name}</strong><br>
@@ -97,7 +107,6 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   private centerOnUserLocation(): void {
-    // Centre immediately on cached coords if available
     const cached = this.location.coords;
     if (cached) {
       this.map?.setView([cached.lat, cached.lng], 13);
@@ -118,7 +127,6 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       () => { if (!cached) this.fetchAndRender(); }
     );
   }
-
 
   ngOnDestroy(): void {
     if (this.watchId !== undefined) {

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../services/authentication/auth.service';
@@ -14,6 +14,7 @@ import { MetricsService } from '../services/metrics/metrics.service';
 })
 export class AppComponent implements OnInit {
   title = 'my-app';
+  private platformId = inject(PLATFORM_ID);
 
   constructor(
     private authService: AuthService,
@@ -22,7 +23,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (window.location.hostname === 'run.wivvus.com') {
+    if (isPlatformBrowser(this.platformId) && window.location.hostname === 'run.wivvus.com') {
       const id = window.location.pathname.replace(/^\//, '');
       window.location.replace(`https://wivvus.com/run/${id}`);
       return;

@@ -1,5 +1,6 @@
-import { Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, NgZone, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface Coords {
   lat: number;
@@ -10,21 +11,23 @@ const STORAGE_KEY = 'user_location';
 
 @Injectable({ providedIn: 'root' })
 export class LocationService {
-  private coordsSubject = new BehaviorSubject<Coords | null>(this.loadCached());
-  coords$ = this.coordsSubject.asObservable();
+  private platformId = inject(PLATFORM_ID);
+  private coordsSubject!: BehaviorSubject<Coords | null>;
+  coords$!: Observable<Coords | null>;
 
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone) {
+    this.coordsSubject = new BehaviorSubject<Coords | null>(
+      isPlatformBrowser(this.platformId) ? this.loadCached() : null
+    );
+    this.coords$ = this.coordsSubject.asObservable();
+  }
 
   get coords(): Coords | null {
     return this.coordsSubject.value;
   }
 
-  /**
-   * Request location once. Uses cached coords immediately if available,
-   * then updates when fresh GPS arrives.
-   */
   request(): void {
-    if (!navigator.geolocation) return;
+    if (!isPlatformBrowser(this.platformId) || !navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       pos => {
         const coords: Coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
@@ -38,12 +41,8 @@ export class LocationService {
     );
   }
 
-  /**
-   * Watch position for continuous updates (e.g. map centering).
-   * Returns the watch ID so the caller can clear it.
-   */
   watch(onUpdate: (coords: Coords, accuracy: number) => void, onError: () => void): number {
-    if (!navigator.geolocation) { onError(); return -1; }
+    if (!isPlatformBrowser(this.platformId) || !navigator.geolocation) { onError(); return -1; }
     return navigator.geolocation.watchPosition(
       pos => {
         const coords: Coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
@@ -57,6 +56,7 @@ export class LocationService {
   }
 
   clearWatch(id: number): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (id >= 0) navigator.geolocation.clearWatch(id);
   }
 

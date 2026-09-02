@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/authentication/auth.service';
@@ -15,6 +16,7 @@ import { AuthService } from '../../services/authentication/auth.service';
 })
 export class AuthGoogleCallbackComponent implements OnInit {
   message = 'Signing in…';
+  private platformId = inject(PLATFORM_ID);
 
   constructor(
     private route: ActivatedRoute,
@@ -23,6 +25,8 @@ export class AuthGoogleCallbackComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const code = this.route.snapshot.queryParamMap.get('code');
     const error = this.route.snapshot.queryParamMap.get('error');
 

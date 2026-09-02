@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EventFilters } from '../../../models/event.model';
 
@@ -30,9 +30,10 @@ export class EventFiltersComponent implements OnInit {
   paceHigh = PACE_MAX;
   dateFrom: string = '';
   collapsed = false;
+  private platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
-    this.collapsed = window.innerWidth < 768;
+    this.collapsed = isPlatformBrowser(this.platformId) ? window.innerWidth < 768 : false;
   }
 
   get hasActiveFilters(): boolean {

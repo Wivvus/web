@@ -1,4 +1,5 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -21,19 +22,24 @@ export interface UserInfo {
   providedIn: 'root'
 })
 export class AuthService {
-  private tokenSubject = new BehaviorSubject<string | null>(this.getStoredToken());
-  private userSubject = new BehaviorSubject<UserInfo | null>(this.getStoredUser());
+  private platformId = inject(PLATFORM_ID);
+  private tokenSubject!: BehaviorSubject<string | null>;
+  private userSubject!: BehaviorSubject<UserInfo | null>;
 
   public redirectAfterLogin: string = '/';
 
-  public token$: Observable<string | null> = this.tokenSubject.asObservable();
-  public user$: Observable<UserInfo | null> = this.userSubject.asObservable();
+  public token$!: Observable<string | null>;
+  public user$!: Observable<UserInfo | null>;
 
   private http: HttpClient;
 
   constructor(private router: Router, httpBackend: HttpBackend, private ngZone: NgZone, private metrics: MetricsService) {
     this.http = new HttpClient(httpBackend);
-
+    const isBrowser = isPlatformBrowser(this.platformId);
+    this.tokenSubject = new BehaviorSubject<string | null>(isBrowser ? this.getStoredToken() : null);
+    this.userSubject = new BehaviorSubject<UserInfo | null>(isBrowser ? this.getStoredUser() : null);
+    this.token$ = this.tokenSubject.asObservable();
+    this.user$ = this.userSubject.asObservable();
   }
 
   /**
@@ -41,7 +47,8 @@ export class AuthService {
    * Works in all browsers including Telegram's in-app WebView.
    */
   public getGoogleOAuthUrl(): string {
-    const redirectUri = `${window.location.origin}/auth/google/callback`;
+    const origin = isPlatformBrowser(this.platformId) ? window.location.origin : environment.apiUrl;
+    const redirectUri = `${origin}/auth/google/callback`;
     const params = new URLSearchParams({
       client_id: environment.googleClientId,
       redirect_uri: redirectUri,
@@ -89,9 +96,6 @@ export class AuthService {
         width: 250,
       }
     );
-
-    // Optional: Show One Tap prompt
-    // google.accounts.id.prompt();
   }
 
   /**
@@ -105,16 +109,13 @@ export class AuthService {
     ).subscribe({
       next: res => {
         this.handleLocalAuthResponse(res.token, res.user);
-        // Override provider to 'google' so change-password form stays hidden
         this.setProvider('google');
         this.ngZone.run(() => {
           this.router.navigateByUrl(this.redirectAfterLogin);
           this.redirectAfterLogin = '/';
         });
       },
-      error: () => {
-        // Fallback: nothing, stay on login page
-      }
+      error: () => {}
     });
   }
 
@@ -138,54 +139,33 @@ export class AuthService {
     }
   }
 
-  /**
-   * Store token in session storage
-   */
   private setToken(token: string): void {
-    localStorage.setItem('id_token', token);
+    if (isPlatformBrowser(this.platformId)) localStorage.setItem('id_token', token);
     this.tokenSubject.next(token);
   }
 
-  /**
-   * Store user info in session storage
-   */
   public setUser(user: UserInfo): void {
-    localStorage.setItem('user_info', JSON.stringify(user));
+    if (isPlatformBrowser(this.platformId)) localStorage.setItem('user_info', JSON.stringify(user));
     this.userSubject.next(user);
   }
 
-  /**
-   * Get stored token
-   */
   private getStoredToken(): string | null {
     return localStorage.getItem('id_token');
   }
 
-  /**
-   * Get stored user info
-   */
   private getStoredUser(): UserInfo | null {
     const userStr = localStorage.getItem('user_info');
     return userStr ? JSON.parse(userStr) : null;
   }
 
-  /**
-   * Get current token value
-   */
   public getToken(): string | null {
     return this.tokenSubject.value;
   }
 
-  /**
-   * Get current user value
-   */
   public getUser(): UserInfo | null {
     return this.userSubject.value;
   }
 
-  /**
-   * Check if user is authenticated
-   */
   public isAuthenticated(): boolean {
     const token = this.tokenSubject.value;
     if (!token) return false;
@@ -202,9 +182,6 @@ export class AuthService {
     return true;
   }
 
-  /**
-   * Logout user
-   */
   public registerWithEmail(email: string, name: string): Observable<any> {
     return this.http.post(`${environment.apiUrl}/auth/register`, { email, name });
   }
@@ -236,18 +213,21 @@ export class AuthService {
   }
 
   public getProvider(): string {
+    if (!isPlatformBrowser(this.platformId)) return 'google';
     return localStorage.getItem('auth_provider') || 'google';
   }
 
   private setProvider(provider: string): void {
-    localStorage.setItem('auth_provider', provider);
+    if (isPlatformBrowser(this.platformId)) localStorage.setItem('auth_provider', provider);
   }
 
   public logout(returnUrl: string = '/'): void {
     this.metrics.reset();
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('user_info');
-    localStorage.removeItem('auth_provider');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('id_token');
+      localStorage.removeItem('user_info');
+      localStorage.removeItem('auth_provider');
+    }
     this.tokenSubject.next(null);
     this.userSubject.next(null);
 

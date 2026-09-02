@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MetricsService } from '../../services/metrics/metrics.service';
+import { SSR_RESPONSE } from '../../tokens/ssr.tokens';
 
 @Component({
   selector: 'app-not-found',
@@ -9,9 +10,14 @@ import { MetricsService } from '../../services/metrics/metrics.service';
   styleUrl: './notFound.style.less'
 })
 export class NotFoundComponent implements OnInit {
+  private response = inject(SSR_RESPONSE, { optional: true });
+
   constructor(private router: Router, private metrics: MetricsService) {}
 
   ngOnInit(): void {
+    if (this.response) {
+      this.response.status(404);
+    }
     this.metrics.notFoundHit(this.router.url);
   }
 

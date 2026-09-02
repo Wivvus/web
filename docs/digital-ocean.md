@@ -1,152 +1,118 @@
 # Hosting the Wivvus Frontend on DigitalOcean App Platform
 
-This guide covers deploying the Angular frontend using DigitalOcean App Platform as a **Static Site**, which deploys directly from your GitHub repository and automatically redeploys on every push to `main`.
+The Angular frontend uses **Server-Side Rendering (SSR)** via a Node.js/Express server, so it must be deployed as a **Web Service** (not a Static Site) on App Platform. This costs **$5/month** on the Basic plan.
 
 ---
 
 ## Overview
 
-DigitalOcean App Platform static sites:
+The build produces two output folders under `dist/web/`:
 
-- Pull code directly from GitHub
-- Run `npm run build` automatically
-- Serve the compiled output as a global CDN-backed static site
-- Manage TLS certificates and a public HTTPS URL
-- Redeploy automatically on every push to `main`
-- Are **free** for static sites on the Starter plan
+- `browser/` — static assets (JS, CSS, images) served directly by Express
+- `server/server.mjs` — the Express/Angular SSR server that handles all requests
+
+App Platform:
+- Pulls code from GitHub
+- Runs `npm run build` to produce both folders
+- Starts the server with `node dist/web/server/server.mjs`
+- Injects `PORT=8080`; the server reads `process.env['PORT']` automatically
+- Redeploys on every push to `main`
 
 ---
 
 ## Prerequisites
 
 - A DigitalOcean account
-- The frontend repository pushed to GitHub (`github.com/Wivvus/web`)
-- The API already deployed and reachable at a public URL (e.g. `https://api.wivvus.com`)
+- The `Wivvus/web` repository pushed to GitHub
+- The API already deployed at a public URL (e.g. `https://api.wivvus.com`)
 
 ---
 
-## 1. Set the Production Environment
+## Migrating from a Static Site deployment
 
-Before deploying, update `src/environments/environment.ts` with your real API URL and Google OAuth client ID:
+If the app is currently deployed as a Static Site on App Platform, you need to **delete** that component and replace it with a Web Service — App Platform does not allow changing a component's type in place.
 
-```typescript
-export const environment = {
-  production: true,
-  googleClientId: '<your-google-client-id>',
-  apiUrl: 'https://api.wivvus.com'
-};
-```
+1. Go to the App in App Platform.
+2. Open **Settings → Components** and delete the static site component.
+3. Click **Edit → Add Component** and follow the steps below.
 
-Commit and push this change to `main`:
-
-```bash
-git add src/environments/environment.ts
-git commit -m "Configure production environment"
-git push origin main
-```
-
-> The services import from `environment.development.ts` by default. During a production build, Angular automatically replaces `environment.development.ts` with `environment.ts` via `fileReplacements` in `angular.json`. So `environment.ts` is what gets used in production — never put `localhost` URLs there.
+Or delete the entire App and create a new one.
 
 ---
 
-## 2. Create the App
+## 1. Create the App
 
 1. In the DigitalOcean control panel, go to **App Platform → Create App**.
 2. Choose **GitHub** as the source.
-3. Authorise DigitalOcean to access your GitHub account if prompted.
-4. Select the `Wivvus/web` repository and the `main` branch.
-5. Enable **Autodeploy** — this redeploys the site automatically on every push.
-6. Click **Next**.
+3. Select the `Wivvus/web` repository and the `main` branch.
+4. Enable **Autodeploy**.
+5. Click **Next**.
 
 ---
 
-## 3. Configure the Static Site Component
+## 2. Configure the Web Service Component
 
-App Platform will detect `package.json` and suggest a Static Site component.
-
-Confirm the following settings:
+App Platform may detect it as a Static Site — change it to **Web Service**.
 
 | Field | Value |
 |---|---|
-| **Type** | Static Site |
+| **Type** | Web Service |
 | **Build Command** | `npm run build` |
-| **Output Directory** | `dist/web/browser` |
+| **Run Command** | `node dist/web/server/server.mjs` |
+| **HTTP Port** | `8080` |
 
-App Platform detects these automatically, but double-check that the output directory matches exactly.
-
-Click **Next**.
-
----
-
-## 4. Configure SPA Routing
-
-Angular uses HTML5 `pushState` routing — navigating to a URL like `/events/123` directly would return a 404 unless the server falls back to `index.html`.
-
-In the component settings, find **Routes** (or **Error Pages**) and set:
-
-- **Catchall route:** `/` → serves `index.html`
-
-Alternatively, this is configured in App Platform under **Settings → Components → Routes**:
-
-| Route | Behaviour |
-|---|---|
-| `/*` | Serve `index.html` |
-
-This ensures deep links and page refreshes work correctly.
+Leave the output directory blank — Express serves files directly from `dist/web/browser/`.
 
 ---
 
-## 5. Choose a Plan and Deploy
+## 3. Choose a Plan and Deploy
 
-1. Static sites are **free** on the Starter plan — select it.
-2. Review the summary and click **Create Resources**.
+Web Services require a paid plan — the **Basic** tier at **$5/month** is sufficient.
 
-App Platform will clone the repository, run `npm run build`, and publish the output to its CDN. The first deploy takes a few minutes.
+Review the summary and click **Create Resources**. The first deploy takes a few minutes.
 
 ---
 
-## 6. Get Your Site URL
+## 4. Get Your Site URL
 
-Once deployed, App Platform assigns a public URL like:
+Once deployed, App Platform assigns a URL like:
 
 ```
 https://wivvus-web-xxxx.ondigitalocean.app
 ```
 
-Find it under **App Overview → Live URL**.
-
 ---
 
-## 7. Add a Custom Domain (Optional)
+## 5. Add a Custom Domain
 
 1. In the App settings, go to **Domains → Add Domain**.
-2. Enter your domain, e.g. `wivvus.com` or `www.wivvus.com`.
-3. Follow the instructions to add a CNAME record in your DNS provider pointing to the App Platform URL.
+2. Enter your domain (e.g. `run.wivvus.com`).
+3. Add a CNAME record in your DNS provider pointing to the App Platform URL.
 4. App Platform provisions a Let's Encrypt certificate automatically.
 
 ---
 
-## 8. Update CORS on the API
+## 6. Update CORS on the API
 
-Once the frontend is live at its public URL, update the `ALLOWED_ORIGINS` environment variable on the API App to include it:
+Add the production frontend URL to `ALLOWED_ORIGINS` on the API App:
 
 ```
-https://wivvus.com
+https://run.wivvus.com
 ```
 
-In the API app's settings go to **Environment Variables** and update `ALLOWED_ORIGINS`, then save. This triggers a redeploy of the API.
+In the API app's settings go to **Environment Variables → ALLOWED_ORIGINS** and update it, then save. This triggers a redeploy.
 
 ---
 
-## 9. Update Google OAuth Authorised Origins
+## 7. Update Google OAuth Authorised Origins
 
 In the [Google Cloud Console](https://console.cloud.google.com):
 
 1. Go to **APIs & Services → Credentials**.
 2. Edit your OAuth 2.0 Client ID.
-3. Under **Authorised JavaScript origins**, add your production frontend URL:
+3. Under **Authorised JavaScript origins**, add:
    ```
-   https://wivvus.com
+   https://run.wivvus.com
    ```
 
 ---
@@ -155,16 +121,12 @@ In the [Google Cloud Console](https://console.cloud.google.com):
 
 ### Deploying an update
 
-Push to `main` — App Platform detects the push, rebuilds, and redeploys automatically.
-
-```bash
-git push origin main
-```
+Push to `main` — App Platform rebuilds and redeploys automatically.
 
 ### Viewing build logs
 
-In the App Platform dashboard, go to **Deployments** and click a deployment to see the full build output, including the `npm run build` log.
+In the App Platform dashboard, go to **Deployments** and click a deployment to see the full build output.
 
 ### Changing the API URL
 
-Update `src/environments/environment.ts` with the new URL and push. App Platform will rebuild and redeploy.
+Update `src/environments/environment.ts` with the new URL and push.

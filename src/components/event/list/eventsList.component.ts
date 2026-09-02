@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { EventsListViewComponent } from "../listView/eventListView.component";
@@ -22,12 +22,14 @@ export class EventsListComponent implements OnInit {
     view: 'list' | 'map' = 'list';
     filters: EventFilters = {};
     flashMessage: string | null = null;
+    private platformId = inject(PLATFORM_ID);
 
   constructor(private apiService: ApiService, private router: Router, private metrics: MetricsService) {}
 
     ngOnInit(): void {
         const nav = this.router.getCurrentNavigation();
-        this.flashMessage = nav?.extras?.state?.['message'] ?? (history.state?.message ?? null);
+        const historyMessage = isPlatformBrowser(this.platformId) ? history.state?.message : null;
+        this.flashMessage = nav?.extras?.state?.['message'] ?? historyMessage ?? null;
         if (this.flashMessage) {
           setTimeout(() => this.flashMessage = null, 5000);
         }

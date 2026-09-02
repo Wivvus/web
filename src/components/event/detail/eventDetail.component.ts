@@ -1,7 +1,6 @@
 import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api/api.service';
 import { AuthService } from '../../../services/authentication/auth.service';
@@ -9,6 +8,7 @@ import { Event, EventOption, RatingInfo, RatingInfoWithEvent } from '../../../mo
 import { MapComponent, LatLng } from '../../map/map.component';
 import { HeaderComponent } from '../../header/header.component';
 import { MetricsService } from '../../../services/metrics/metrics.service';
+import { SeoService } from '../../../services/seo/seo.service';
 
 @Component({
   selector: 'event-detail',
@@ -35,7 +35,7 @@ export class EventDetailComponent implements OnInit {
     private router: Router,
     private apiService: ApiService,
     private authService: AuthService,
-    private title: Title,
+    private seo: SeoService,
     private metrics: MetricsService
   ) {}
 
@@ -50,7 +50,7 @@ export class EventDetailComponent implements OnInit {
           return;
         }
         this.event = event;
-        this.title.setTitle(event.name);
+        this.seo.setEvent(event);
         this.metrics.eventViewed(event.id, event.name);
         this.loadRatings(id);
         if (this.isLoggedIn) {

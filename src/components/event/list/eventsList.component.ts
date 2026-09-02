@@ -9,6 +9,7 @@ import { EventsMapComponent } from '../map/eventsMap.component';
 import { EventFiltersComponent } from '../filters/eventFilters.component';
 import { HeaderComponent } from '../../header/header.component';
 import { MetricsService } from '../../../services/metrics/metrics.service';
+import { SeoService } from '../../../services/seo/seo.service';
 
 @Component({
   selector: 'eventsList',
@@ -24,9 +25,10 @@ export class EventsListComponent implements OnInit {
     flashMessage: string | null = null;
     private platformId = inject(PLATFORM_ID);
 
-  constructor(private apiService: ApiService, private router: Router, private metrics: MetricsService) {}
+  constructor(private apiService: ApiService, private router: Router, private metrics: MetricsService, private seo: SeoService) {}
 
     ngOnInit(): void {
+        this.seo.setDefault();
         const nav = this.router.getCurrentNavigation();
         const historyMessage = isPlatformBrowser(this.platformId) ? history.state?.message : null;
         this.flashMessage = nav?.extras?.state?.['message'] ?? historyMessage ?? null;

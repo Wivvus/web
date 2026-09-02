@@ -25,6 +25,11 @@ export function app(): express.Express {
     maxAge: '1y'
   }));
 
+  // Short URLs: /20 → /run/20
+  server.get(/^\/(\d+)$/, (req, res) => {
+    res.redirect(301, `/run${req.path}`);
+  });
+
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;

@@ -6,6 +6,7 @@ import { AuthService } from '../../services/authentication/auth.service';
 @Component({
   selector: 'app-header',
   standalone: true,
+  host: { ngSkipHydration: 'true' },
   imports: [CommonModule],
   templateUrl: './header.template.html',
   styleUrl: './header.style.less'

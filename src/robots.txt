@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Disallow: /login
+Disallow: /register
+Disallow: /set-password
+Disallow: /account
+Disallow: /run/create
+Disallow: /run/*/edit
+Disallow: /run/*/review
+Disallow: /auth/

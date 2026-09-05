@@ -8,6 +8,8 @@
   <div class="detail-content">
     <h1 class="event-title">{{ event.name }}</h1>
 
+    <div class="past-event-banner" *ngIf="isInPast">This run has already taken place.</div>
+
     <div class="detail-main">
       <div class="detail-stats" *ngIf="event.distance_km || event.pace_min_km || event.start_time">
         <div class="stat" *ngIf="event.start_time">
@@ -26,13 +28,13 @@
 
       <p class="detail-description" *ngIf="event.description">{{ event.description }}</p>
 
-      <div class="owner-actions-panel" *ngIf="isOwner">
-        <button class="btn-edit" (click)="onEdit()">Edit this run</button>
-        <button class="btn-delete" (click)="onDelete()">Delete this run</button>
+      <div class="owner-actions-panel" *ngIf="isOwner" [attr.title]="isInPast ? 'This run has already taken place' : null">
+        <button class="btn-edit" (click)="onEdit()" [disabled]="isInPast">Edit this run</button>
+        <button class="btn-delete" (click)="onDelete()" [disabled]="isInPast">Delete this run</button>
       </div>
     </div>
 
-    <div class="attend-section">
+    <div class="attend-section" [attr.title]="isInPast ? 'This run has already taken place' : null">
       <ng-container *ngIf="isLoggedIn; else notLoggedIn">
         <!-- Event has custom options -->
         <ng-container *ngIf="event && event.options && event.options.length > 0; else defaultJoin">
@@ -41,25 +43,26 @@
               *ngFor="let opt of event.options"
               class="btn-option"
               [class.btn-option-selected]="isAttending && myOptionId === opt.id"
+              [disabled]="isInPast"
               (click)="selectOption(opt)"
             >{{ opt.text }}</button>
           </div>
-          <button class="btn-drop" *ngIf="isAttending" (click)="onDrop()">Drop out</button>
+          <button class="btn-drop" *ngIf="isAttending" [disabled]="isInPast" (click)="onDrop()">Drop out</button>
         </ng-container>
         <!-- Default single join button -->
         <ng-template #defaultJoin>
-          <button class="btn-attend" *ngIf="!isAttending" (click)="onAttend()">Join this run</button>
-          <button class="btn-drop" *ngIf="isAttending" (click)="onDrop()">Drop out</button>
+          <button class="btn-attend" *ngIf="!isAttending" [disabled]="isInPast" (click)="onAttend()">Join this run</button>
+          <button class="btn-drop" *ngIf="isAttending" [disabled]="isInPast" (click)="onDrop()">Drop out</button>
         </ng-template>
       </ng-container>
       <ng-template #notLoggedIn>
         <ng-container *ngIf="event && event.options && event.options.length > 0; else defaultJoinGuest">
           <div class="attend-options">
-            <button *ngFor="let opt of event.options" class="btn-option" (click)="joinRun()">{{ opt.text }}</button>
+            <button *ngFor="let opt of event.options" class="btn-option" [disabled]="isInPast" (click)="joinRun()">{{ opt.text }}</button>
           </div>
         </ng-container>
         <ng-template #defaultJoinGuest>
-          <button class="btn-attend" (click)="joinRun()">Join this run</button>
+          <button class="btn-attend" [disabled]="isInPast" (click)="joinRun()">Join this run</button>
         </ng-template>
       </ng-template>
     </div>
@@ -112,7 +115,7 @@
       </div>
     </div>
 
-    <div class="calendar-section" *ngIf="isAttending && event.start_time">
+    <div class="calendar-section" *ngIf="isAttending && event.start_time && !isInPast">
       <p class="calendar-label">Add to your calendar</p>
       <div class="calendar-buttons">
         <a class="btn-calendar btn-gcal" [href]="googleCalendarUrl" target="_blank" rel="noopener">Google Calendar</a>

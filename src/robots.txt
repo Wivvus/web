@@ -9,3 +9,5 @@ Disallow: /run/create
 Disallow: /run/*/edit
 Disallow: /run/*/review
 Disallow: /auth/
+
+Sitemap: https://wivvus.com/sitemap.xml

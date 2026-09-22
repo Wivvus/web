@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 import { Event } from '../../models/event.model';
 import { environment } from '../../environments/environment.development';
 
 @Injectable({ providedIn: 'root' })
 export class SeoService {
+  private doc = inject(DOCUMENT);
   constructor(private meta: Meta, private title: Title) {}
 
   setEvent(event: Event): void {
@@ -44,8 +46,19 @@ export class SeoService {
     return parts.slice(0, 3).join(' · ');
   }
 
+  private setCanonical(url: string): void {
+    let link: HTMLLinkElement = this.doc.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!link) {
+      link = this.doc.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      this.doc.head.appendChild(link);
+    }
+    link.setAttribute('href', url);
+  }
+
   private setTags(tags: { title: string; description: string; url: string; image?: string }): void {
     const { title, description, url, image } = tags;
+    this.setCanonical(url);
     this.meta.updateTag({ property: 'og:title', content: title });
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:url', content: url });

@@ -29,7 +29,7 @@
 
       <div *ngIf="event.description">
         <h2 class="section-heading">Description</h2>
-        <p class="detail-description" [innerHTML]="event.description | linkify"></p>
+        <div class="detail-description" [innerHTML]="event.description | linkify"></div>
       </div>
 
       <div class="owner-actions-panel" *ngIf="isOwner" [attr.title]="isInPast ? 'This run has already taken place' : null">

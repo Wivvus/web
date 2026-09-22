@@ -9,11 +9,12 @@ import { MapComponent, LatLng } from '../../map/map.component';
 import { HeaderComponent } from '../../header/header.component';
 import { MetricsService } from '../../../services/metrics/metrics.service';
 import { SeoService } from '../../../services/seo/seo.service';
+import { LinkifyPipe } from '../../../pipes/linkify.pipe';
 
 @Component({
   selector: 'event-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, MapComponent, HeaderComponent],
+  imports: [CommonModule, FormsModule, MapComponent, HeaderComponent, LinkifyPipe],
   templateUrl: './eventDetail.template.html',
   styleUrl: './eventDetail.style.less'
 })

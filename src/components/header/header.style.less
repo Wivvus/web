@@ -8,11 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--black);
-  box-shadow:
-    0 2px 8px rgba(0,0,0,0.18),
-    inset 0 -6px 16px var(--yellow),
-    inset 0 -12px 32px rgba(255,213,0,0.4);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .header-tagline {
@@ -24,13 +20,6 @@
   color: var(--white);
   white-space: nowrap;
   pointer-events: none;
-  text-shadow:
-    0 0 4px var(--yellow),
-    0 0 8px var(--yellow),
-    0 0 16px var(--yellow),
-    0 0 32px var(--yellow),
-    0 0 60px var(--yellow),
-    0 0 80px var(--yellow);
 }
 
 .header-left {
@@ -119,7 +108,7 @@
   right: 0;
   background: var(--white);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
   min-width: 160px;
   overflow: hidden;
   z-index: 10000;

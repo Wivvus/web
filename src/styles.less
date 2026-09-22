@@ -6,20 +6,20 @@
 
 /* ---------- CSS Custom Properties ---------- */
 :root {
-  --red:           #D32F2F;
-  --red-dark:      #B71C1C;
-  --red-light:     #FFEBEE;
-  --yellow:        #FFD600;
-  --yellow-dark:   #F9A825;
+  --red:           #1A1A1A;
+  --red-dark:      #444444;
+  --red-light:     #EEEEEE;
+  --yellow:        #EEED9B;
+  --yellow-dark:   #D4D470;
   --black:         #1A1A1A;
   --white:         #FFFFFF;
-  --bg:            #F5F5F5;
+  --bg:            #FFFFFF;
   --text:          #1A1A1A;
   --text-muted:    #616161;
   --border:        #E0E0E0;
-  --shadow-sm:     0 1px 3px rgba(0,0,0,0.12);
-  --shadow-md:     0 4px 12px rgba(0,0,0,0.12);
-  --shadow-lg:     0 8px 24px rgba(0,0,0,0.14);
+  --shadow-sm:     none;
+  --shadow-md:     none;
+  --shadow-lg:     none;
   --radius-sm:     6px;
   --radius-md:     10px;
   --radius-lg:     16px;
@@ -85,8 +85,6 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: var(--shadow-md);
-
   h1, h2 {
     color: var(--white);
     font-size: 1.2rem;
@@ -104,7 +102,6 @@ a {
 .card {
   background: var(--white);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
   padding: 1.25rem;
   margin-bottom: 0.75rem;
 }
@@ -187,8 +184,8 @@ a {
 
   &:focus {
     outline: none;
-    border-color: var(--red);
-    box-shadow: 0 0 0 3px rgba(211,47,47,0.15);
+    border-color: var(--black);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.12);
   }
 }
 

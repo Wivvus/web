@@ -104,14 +104,13 @@
   border-radius: var(--radius-lg);
   border: 1.5px dashed var(--border);
   padding: 0.85rem 1rem;
-  box-shadow: var(--shadow-lg);
   cursor: pointer;
   text-align: center;
   transition: border-color 0.15s, background 0.15s;
 
   &:hover {
-    border-color: var(--red);
-    background: var(--bg);
+    border-color: var(--black);
+    background: var(--yellow);
   }
 }
 
@@ -134,15 +133,14 @@
   padding: 1.25rem;
   background: var(--white);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
   border: 1.5px dashed var(--border);
   text-align: center;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 
   &:hover {
-    border-color: var(--red);
-    background: var(--bg);
+    border-color: var(--black);
+    background: var(--yellow);
   }
 }
 
@@ -165,4 +163,8 @@
   color: var(--text-muted);
   padding: 3rem 1rem;
   font-size: 0.95rem;
+  transition: background 0.15s;
+  cursor: default;
+
+  &:hover { background: var(--yellow); }
 }

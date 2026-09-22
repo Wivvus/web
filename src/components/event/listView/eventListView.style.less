@@ -1,15 +1,15 @@
 .event-card {
   background: var(--white);
+  border-left: 4px solid var(--black);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
   padding: 1rem 1.25rem;
-  border-left: 4px solid var(--red);
   cursor: pointer;
-  transition: box-shadow 0.15s, transform 0.1s;
+  transition: transform 0.1s, border-left-color 0.15s, background 0.15s;
 
   &:hover {
-    box-shadow: var(--shadow-md);
     transform: translateY(-1px);
+    border-left-color: transparent;
+    background: var(--yellow);
   }
 
   &:active {
@@ -58,7 +58,7 @@
 .creator-rating {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--yellow);
+  color: var(--text-muted);
   white-space: nowrap;
   flex-shrink: 0;
 }

@@ -49,8 +49,9 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
       setTimeout(() => {
         this.map = L.map(this.mapEl.nativeElement, { zoom: 12, center: [20, 0] });
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
+        L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
+          attribution: '© <a href="https://stadiamaps.com/">Stadia Maps</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          maxZoom: 20
         }).addTo(this.map);
 
         this.map.on('moveend', () => this.ngZone.run(() => this.fetchAndRender()));
@@ -90,7 +91,7 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       const chips = [
         ...(event.distance_km ? [`${event.distance_km} km`] : []),
         ...(event.all_paces ? ['All paces welcome'] : (event.pace_min_km ? [`${event.pace_min_km} min/km`] : []))
-      ].map(t => `<span style="font-size:0.75rem;font-weight:600;color:#d32f2f;background:#fdecea;border-radius:999px;padding:0.15rem 0.55rem;">${t}</span>`).join(' ');
+      ].map(t => `<span style="font-size:0.75rem;font-weight:600;color:#1a1a1a;background:#eeeeee;border-radius:999px;padding:0.15rem 0.55rem;">${t}</span>`).join(' ');
 
       const marker = this.L.marker([lat, lng], { icon: this.defaultIcon })
         .addTo(this.map!)
@@ -99,7 +100,7 @@ export class EventsMapComponent implements AfterViewInit, OnChanges, OnDestroy {
           <span style="color:#666;font-size:0.82rem;">${date}</span>
           ${chips ? `<br><div style="margin-top:0.35rem;display:flex;gap:0.3rem;flex-wrap:wrap;">${chips}</div>` : ''}
           <br>
-          <a href="/run/${event.id}" style="color:#d32f2f;font-weight:600;font-size:0.85rem;">View event →</a>
+          <a href="/run/${event.id}" style="color:#1a1a1a;font-weight:600;font-size:0.85rem;">View event →</a>
         `);
 
       this.markers.push(marker);

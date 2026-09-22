@@ -68,9 +68,9 @@ h1 {
   font-family: var(--font);
   cursor: pointer;
   margin: 1.5rem 0;
-  transition: box-shadow 0.15s;
+  transition: opacity 0.15s;
 
-  &:hover { box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  &:hover { opacity: 0.85; }
 }
 
 .divider {
@@ -128,7 +128,7 @@ h1 {
   &:focus {
     outline: none;
     border-color: var(--red);
-    box-shadow: 0 0 0 3px rgba(211,47,47,0.15);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.12);
   }
 }
 

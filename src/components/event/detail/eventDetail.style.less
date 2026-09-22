@@ -70,7 +70,6 @@ button:disabled {
   height: 280px;
   overflow: hidden;
   border-bottom: 1px solid var(--black);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.35);
   app-map {
     display: block;
   }
@@ -164,7 +163,7 @@ button:disabled {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  border: 2px solid var(--yellow);
+  border: 2px solid var(--border);
   background: var(--border);
   display: flex;
   align-items: center;
@@ -368,15 +367,16 @@ button:disabled {
   border: 2px solid var(--red);
   border-radius: var(--radius-sm);
   background: var(--white);
-  color: var(--red);
+  color: var(--black);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, transform 0.1s;
 
+  &:first-child { background: var(--yellow); }
   &:active { transform: scale(0.98); }
-  &:hover { background: var(--red); color: var(--white); }
+  &:hover { background: var(--yellow-dark); }
 
   &.btn-option-selected {
-    background: var(--red);
+    background: var(--black);
     color: var(--white);
   }
 }
@@ -399,9 +399,9 @@ button:disabled {
 }
 
 .btn-attend {
-  background: var(--red);
-  color: var(--white);
-  &:hover { background: var(--red-dark); }
+  background: var(--yellow);
+  color: var(--black);
+  &:hover { background: var(--yellow-dark); }
 }
 
 .btn-drop {
@@ -462,9 +462,13 @@ button:disabled {
 
 .section-heading {
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--black);
-  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 1.5rem 0 0.75rem;
+  padding: 0.4rem 0.75rem;
+  border-left: 4px solid var(--black);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -519,11 +523,11 @@ button:disabled {
   transition: color 0.1s;
 
   &.active {
-    color: var(--yellow);
+    color: var(--black);
   }
 
   &:hover {
-    color: var(--yellow);
+    color: var(--black);
   }
 }
 
@@ -614,7 +618,7 @@ button:disabled {
 .rating-stars {
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--yellow);
+  color: var(--black);
 }
 
 .rating-comment-text {
@@ -702,7 +706,7 @@ button:disabled {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 2px solid var(--yellow);
+  border: 2px solid var(--border);
   background: var(--border);
   display: flex;
   align-items: center;

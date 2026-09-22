@@ -5,28 +5,29 @@ import { environment } from '../../environments/environment.development';
 
 @Injectable({ providedIn: 'root' })
 export class SeoService {
-  private readonly defaultImage = `${environment.appUrl}/assets/logo.png`;
-
   constructor(private meta: Meta, private title: Title) {}
 
   setEvent(event: Event): void {
     const url = `${environment.appUrl}/run/${event.id}`;
     const description = this.buildEventDescription(event);
     const pageTitle = `${event.name} | Wivvus`;
+    const image = this.buildStaticMapUrl(event);
 
     this.title.setTitle(pageTitle);
-    this.setTags({ title: event.name, description, url, image: this.defaultImage });
+    this.setTags({ title: event.name, description, url, image });
   }
 
   setDefault(): void {
     const description = 'Find and join local running events near you.';
     this.title.setTitle('Wivvus');
-    this.setTags({
-      title: 'Wivvus',
-      description,
-      url: environment.appUrl,
-      image: this.defaultImage,
-    });
+    this.setTags({ title: 'Wivvus', description, url: environment.appUrl });
+  }
+
+  private buildStaticMapUrl(event: Event): string | undefined {
+    const lat = event.location?.lat;
+    const lng = event.location?.long;
+    if (!lat || !lng) return undefined;
+    return `https://staticmap.openstreetmap.de/staticmap.php?center=${lat},${lng}&zoom=15&size=600x315&markers=${lat},${lng},red-pushpin`;
   }
 
   private buildEventDescription(event: Event): string {
@@ -43,18 +44,23 @@ export class SeoService {
     return parts.slice(0, 3).join(' · ');
   }
 
-  private setTags(tags: { title: string; description: string; url: string; image: string }): void {
+  private setTags(tags: { title: string; description: string; url: string; image?: string }): void {
     const { title, description, url, image } = tags;
     this.meta.updateTag({ property: 'og:title', content: title });
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:url', content: url });
-    this.meta.updateTag({ property: 'og:image', content: image });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
     this.meta.updateTag({ property: 'og:site_name', content: 'Wivvus' });
     this.meta.updateTag({ name: 'description', content: description });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
+    this.meta.updateTag({ name: 'twitter:card', content: image ? 'summary_large_image' : 'summary' });
     this.meta.updateTag({ name: 'twitter:title', content: title });
     this.meta.updateTag({ name: 'twitter:description', content: description });
-    this.meta.updateTag({ name: 'twitter:image', content: image });
+    if (image) {
+      this.meta.updateTag({ property: 'og:image', content: image });
+      this.meta.updateTag({ name: 'twitter:image', content: image });
+    } else {
+      this.meta.removeTag('property="og:image"');
+      this.meta.removeTag('name="twitter:image"');
+    }
   }
 }

@@ -51,9 +51,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           center: [20, 0]
         });
 
-        L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
-          attribution: '© <a href="https://stadiamaps.com/">Stadia Maps</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-          maxZoom: 20
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Tiles © Esri — Esri, DeLorme, NAVTEQ',
+          maxZoom: 16
         }).addTo(this.map);
 
         if (this.pin) {
